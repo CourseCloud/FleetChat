@@ -3,6 +3,7 @@
 
     <string name="app_name">FleetChat</string>
     <string name="hello_world">Hello world!</string>
+    <string name="hello_gcm">Hello gcm!</string>
     <string name="action_settings">Settings</string>
 
 </resources>

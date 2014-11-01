@@ -1,23 +1,31 @@
 package com.fleetchat;
 
+import com.fleetchat.tools.GCMUtilities;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
+
+	public static GCMUtilities GCM;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		GCM = new GCMUtilities(this);
 		setContentView(R.layout.activity_main);
-		test();
+		setTab();
 	}
 
-	private void test() {
+	private void setTab() {
 		final ActionBar actionBar = getActionBar();
 
 		// Specify that tabs should be displayed in the action bar.
@@ -27,19 +35,41 @@ public class MainActivity extends Activity {
 		ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 
 			@Override
-			public void onTabSelected(Tab tab, FragmentTransaction ft) {
+			public void onTabSelected(Tab tab,
+					android.app.FragmentTransaction ft) {
+				if (tab.getPosition() == 2) {
+
+					// Create new fragment and transaction
+					Fragment fragment = new DemoActivity();
+					FragmentTransaction transaction = getSupportFragmentManager()
+							.beginTransaction();
+
+					// Replace whatever is in the fragment_container view with
+					// this fragment,
+					// and add the transaction to the back stack
+					transaction.replace(R.id.main_activity_frameLayout,
+							fragment);
+
+					// Commit the transaction
+					transaction.commit();
+
+					// Intent intent = new Intent(getApplicationContext(),
+					// DemoActivity.class);
+					// startActivity(intent);
+				}
+
+			}
+
+			@Override
+			public void onTabUnselected(Tab tab,
+					android.app.FragmentTransaction ft) {
 				// TODO Auto-generated method stub
 
 			}
 
 			@Override
-			public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onTabReselected(Tab tab, FragmentTransaction ft) {
+			public void onTabReselected(Tab tab,
+					android.app.FragmentTransaction ft) {
 				// TODO Auto-generated method stub
 
 			}
@@ -48,7 +78,8 @@ public class MainActivity extends Activity {
 		// Add 3 tabs, specifying the tab's text and TabListener
 		for (int i = 0; i < 3; i++) {
 			Tab tab = actionBar.newTab().setText("Tab " + (i + 1))
-					.setTabListener(tabListener).setIcon(R.drawable.ic_launcher);
+					.setTabListener(tabListener)
+					.setIcon(R.drawable.ic_launcher);
 			actionBar.addTab(tab);
 		}
 	}
@@ -71,4 +102,18 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+
+	@Override
+	public void onResume() {
+		GCM.onResume();
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy() {
+		GCM.onDestroy();
+		super.onDestroy();
+	}
+
 }

@@ -44,7 +44,7 @@ public final class CommonUtilities {
      * Intent used to display a message in the screen.
      */
     public static final String DISPLAY_MESSAGE_ACTION =
-            "com.google.android.gcm.demo.app.DISPLAY_MESSAGE";
+            "com.fleetchat.DISPLAY_MESSAGE";
 
     /**
      * Intent's extra that contains the message to be displayed.
