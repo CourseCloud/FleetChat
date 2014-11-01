@@ -1,20 +1,22 @@
 package com.fleetchat;
 
-import com.fleetchat.tools.GCMUtilities;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.fleetchat.fragments.Fragment1;
+import com.fleetchat.fragments.Fragment2;
+import com.fleetchat.tools.GCMUtilities;
+
 public class MainActivity extends FragmentActivity {
 
+	protected static final String TAG = "MainActivity";
 	public static GCMUtilities GCM;
 
 	@Override
@@ -37,10 +39,20 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onTabSelected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				if (tab.getPosition() == 2) {
+				Fragment fragment = null;
+				switch (tab.getPosition()) {
+				case 0:
+					fragment = new Fragment1();
+					break;
+				case 1:
+					fragment = new Fragment2();
+					break;
+				case 2:
+					fragment = new DemoActivity();
+					break;
+				}
 
-					// Create new fragment and transaction
-					Fragment fragment = new DemoActivity();
+				try {
 					FragmentTransaction transaction = getSupportFragmentManager()
 							.beginTransaction();
 
@@ -52,12 +64,9 @@ public class MainActivity extends FragmentActivity {
 
 					// Commit the transaction
 					transaction.commit();
-
-					// Intent intent = new Intent(getApplicationContext(),
-					// DemoActivity.class);
-					// startActivity(intent);
+				} catch (Exception e) {
+					Log.e(TAG, e.toString());
 				}
-
 			}
 
 			@Override
@@ -102,7 +111,6 @@ public class MainActivity extends FragmentActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
 
 	@Override
 	public void onResume() {
