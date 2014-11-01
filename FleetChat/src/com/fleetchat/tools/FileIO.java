@@ -17,14 +17,18 @@ import android.util.Log;
 public class FileIO {
 	private static final String CHAT_DIR = "chat";
 
+	private static final String TAG = "FileIO";
+
 	Context _context;
 	File _file;
 	String _filename;
+	String _fileDir;
 
 	public FileIO(Context context, String filename) {
 		_context = context;
 		_filename = filename;
 		_file = new File(context.getFilesDir(), filename);
+		_fileDir = context.getFilesDir().getPath();
 	}
 
 	/**
@@ -33,7 +37,30 @@ public class FileIO {
 	 * @return /data/data/com.fleetchat/files/chat
 	 */
 	public String getChatDir() {
-		return _context.getFilesDir() + File.separator + CHAT_DIR;
+		File dir = new File(_context.getFilesDir() + File.separator + CHAT_DIR);
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
+		return dir.getPath();
+	}
+
+	/**
+	 * Get List of FileDir: /data/data/com.fleetchat/files/
+	 */
+	public void getFileDirList() {
+		File f = _context.getFilesDir();
+		for (String s : f.list()) {
+			Log.d(TAG, s);
+		}
+	}
+	/**
+	 * Get List of FileDir: /data/data/com.fleetchat/files/chat
+	 */
+	public void getChatDirList() {
+		File f = new File(getChatDir());
+		for (String s : f.list()) {
+			Log.d(TAG, s);
+		}
 	}
 
 	public void output(String string) {
@@ -49,10 +76,15 @@ public class FileIO {
 		}
 	}
 
-	public void write(String string) {
+	public void writeFileToChat(String filename, String string) {
+		writeFile(getChatDir(), filename, string);
+	}
+
+	public void writeFile(String dir, String filename, String string) {
 		FileWriter fw;
 		try {
-			fw = new FileWriter(_file, true);
+			File f = new File(dir, filename);
+			fw = new FileWriter(f, true);
 			fw.append(string);
 			fw.close();
 		} catch (IOException e) {
