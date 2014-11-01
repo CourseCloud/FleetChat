@@ -6,4 +6,11 @@
     <string name="hello_gcm">Hello gcm!</string>
     <string name="action_settings">Settings</string>
 
+    <!-- qr code fragment -->
+    <string name="qrcode_fragment_tv">Permission</string>
+    <string name="qrcode_fragment_rb1">permenant</string>
+    <string name="qrcode_fragment_rb2">limited</string>
+    <string name="qrcode_fragment_ch1">Addable in limited time</string>
+    <string name="qrcode_fragment_btn">Generate QR code</string>
+
 </resources>
