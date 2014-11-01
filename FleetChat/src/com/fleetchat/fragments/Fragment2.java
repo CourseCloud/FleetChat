@@ -35,6 +35,7 @@ public class Fragment2 extends Fragment {
 			@Override
 			public void onClick(View v) {
 				fio.write("twsss");
+				fio.getChatDir();
 				
 				try {
 					mDisplay.setText((String)fio.getStringFromFile("test"));
