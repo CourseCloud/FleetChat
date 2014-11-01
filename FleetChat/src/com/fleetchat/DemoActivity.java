@@ -44,7 +44,7 @@ public class DemoActivity extends Fragment {
 	protected static final String TAG = "DemoActivity";
 	// UI
 	View _view;
-	TextView mDisplay;
+	public static TextView mDisplay;
 
 	// class
 	AlertDialogManager alert = new AlertDialogManager();
