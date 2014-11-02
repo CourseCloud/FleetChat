@@ -31,6 +31,7 @@ int layout fragment1 0x7f030002
 int layout fragment2 0x7f030003
 int layout main2 0x7f030004
 int layout qrcode_fragment 0x7f030005
+int layout qrcode_fragment_dialog1 0x7f030006
 int menu main 0x7f070000
 int menu options_menu 0x7f070001
 int string action_settings 0x7f050003
