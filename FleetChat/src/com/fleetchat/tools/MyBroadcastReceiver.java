@@ -27,6 +27,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
 		String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
 		DemoActivity.mDisplay.append(newMessage + "\n");
+		
+		//TODO 收到訊息後，fileIO到txt檔
 
 		// if
 		// (intent.getAction().equalsIgnoreCase(GCMIntentService.DAVID_GCM_RECEIVE_MESSAGE))

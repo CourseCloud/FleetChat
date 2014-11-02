@@ -1,9 +1,12 @@
 package com.fleetchat.qr;
 
 import java.util.Calendar;
+import java.util.zip.Inflater;
 
+import android.app.Dialog;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -35,21 +38,10 @@ public class QRcode extends FragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new QRcodeFragment()).commit();
 		}
+		
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	public static class QRcodeFragment extends Fragment {
+	public static class QRcodeFragment extends DialogFragment {
 		// UIs
 		private RadioGroup rg;
 		private RadioButton rb1, rb2;
@@ -66,6 +58,13 @@ public class QRcode extends FragmentActivity {
 		private int hour;
 		private int minute;
 
+		// dialog params
+		private String expireDate;
+		private String durDate;
+		private String verif = "Verification";
+		private View view;
+		private Dialog qrDialog;
+
 		// String used to generate qrcode
 		private String strToGen;
 		private String chooseDate1, chooseDate2;
@@ -79,6 +78,8 @@ public class QRcode extends FragmentActivity {
 				Bundle savedInstanceState) {
 			rootView = inflater.inflate(R.layout.qrcode_fragment, container,
 					false);
+			view = inflater.inflate(R.layout.qrcode_fragment_dialog1,
+					container, false);
 			init();
 			return rootView;
 		}
@@ -199,6 +200,9 @@ public class QRcode extends FragmentActivity {
 				}
 			});
 		}
+		private void initDialog(){
+		}
+		
 	}
 
 }
