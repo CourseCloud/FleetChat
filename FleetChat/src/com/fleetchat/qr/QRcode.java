@@ -1,9 +1,12 @@
 package com.fleetchat.qr;
 
 import java.util.Calendar;
+import java.util.zip.Inflater;
 
+import android.app.Dialog;
 import android.opengl.Visibility;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -35,21 +38,10 @@ public class QRcode extends FragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new QRcodeFragment()).commit();
 		}
+		
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	public static class QRcodeFragment extends Fragment {
+	public static class QRcodeFragment extends DialogFragment {
 		// UIs
 		private RadioGroup rg;
 		private RadioButton rb1, rb2;
@@ -66,6 +58,13 @@ public class QRcode extends FragmentActivity {
 		private int hour;
 		private int minute;
 
+		// dialog params
+		private String expireDate;
+		private String durDate;
+		private String verif = "Verification";
+		private View view;
+		private Dialog qrDialog;
+
 		// String used to generate qrcode
 		private String strToGen;
 		private String chooseDate1, chooseDate2;
@@ -79,6 +78,8 @@ public class QRcode extends FragmentActivity {
 				Bundle savedInstanceState) {
 			rootView = inflater.inflate(R.layout.qrcode_fragment, container,
 					false);
+			view = inflater.inflate(R.layout.qrcode_fragment_dialog1,
+					container, false);
 			init();
 			return rootView;
 		}
@@ -128,6 +129,8 @@ public class QRcode extends FragmentActivity {
 			dp2 = (DatePicker) rootView
 					.findViewById(R.id.qrcode_fragment_datePicker2);
 			dp2.setVisibility(View.GONE);
+			setDatePicker1(dp1);
+			setDatePicker2(dp2);
 			tp = (TimePicker) rootView
 					.findViewById(R.id.qrcode_fragment_timePicker1);
 			tp.setVisibility(View.GONE);
@@ -148,8 +151,6 @@ public class QRcode extends FragmentActivity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					initDatePicker(dp1, chooseDate1);
-					initDatePicker(dp2, chooseDate2);
 					strToGen = "duration: " + chooseDate1 + " expiration: "
 							+ chooseDate2 + "-" + chooseTime2;
 					Log.d("TimeChoose", strToGen);
@@ -157,7 +158,7 @@ public class QRcode extends FragmentActivity {
 			});
 		}
 
-		private void initDatePicker(DatePicker dp, String date) {
+		private void setDatePicker1(DatePicker dp) {
 			Calendar c = Calendar.getInstance();
 			year = c.get(Calendar.YEAR);
 			month = c.get(Calendar.MONTH);
@@ -172,11 +173,36 @@ public class QRcode extends FragmentActivity {
 					QRcodeFragment.this.year = year;
 					QRcodeFragment.this.month = month;
 					QRcodeFragment.this.day = day;
+					chooseDate1 = "" + year + "/" + (month + 1) + "/" + day;
+					Log.i("Date1", chooseDate1);
 				}
 			});
-			date = "" + year + "/" + (month + 1) + "/" + day;
-			Log.i("Date1", date);
+
 		}
+
+		private void setDatePicker2(DatePicker dp) {
+			Calendar c = Calendar.getInstance();
+			year = c.get(Calendar.YEAR);
+			month = c.get(Calendar.MONTH);
+			day = c.get(Calendar.DAY_OF_MONTH);
+			hour = c.get(Calendar.HOUR);
+			minute = c.get(Calendar.MINUTE);
+			dp.init(year, month, day, new OnDateChangedListener() {
+
+				@Override
+				public void onDateChanged(DatePicker dp, int year, int month,
+						int day) {
+					QRcodeFragment.this.year = year;
+					QRcodeFragment.this.month = month;
+					QRcodeFragment.this.day = day;
+					chooseDate2 = "" + year + "/" + (month + 1) + "/" + day;
+					Log.i("Date2", chooseDate2);
+				}
+			});
+		}
+		private void initDialog(){
+		}
+		
 	}
 
 }
