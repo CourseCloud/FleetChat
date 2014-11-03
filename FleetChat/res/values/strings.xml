@@ -12,5 +12,10 @@
     <string name="qrcode_fragment_rb2">limited</string>
     <string name="qrcode_fragment_ch1">Addable in limited time</string>
     <string name="qrcode_fragment_btn">Generate QR code</string>
+    
+    <!-- chat_room.xml -->
+    <string name="chat_room_btn">Send</string>
+    <string name="chat_room_et1">Type here</string>
+    
 
 </resources>

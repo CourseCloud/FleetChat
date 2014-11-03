@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.fleetchat.fragments.Fragment1;
-import com.fleetchat.fragments.Fragment2;
+import com.fleetchat.fragments.ChatListFragment;
 import com.fleetchat.tools.GCMUtilities;
 
 public class MainActivity extends FragmentActivity {
@@ -45,7 +45,7 @@ public class MainActivity extends FragmentActivity {
 					fragment = new Fragment1();
 					break;
 				case 1:
-					fragment = new Fragment2();
+					fragment = new ChatListFragment();
 					break;
 				case 2:
 					fragment = new DemoActivity();
