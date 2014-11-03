@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/qrcode_dialog_textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -44,7 +44,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/qrcode_dialog_textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -52,14 +52,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/qrcode_dialog_imageView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.75"
         android:src="@drawable/fail" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/qrcode_dialog_button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/qrcode_fragment_dialog_btn1" />

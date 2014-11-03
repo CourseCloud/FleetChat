@@ -118,7 +118,7 @@ public class DemoActivity extends Fragment {
 
 	private void setView() {
 		mDisplay = (TextView) _view.findViewById(R.id.display);
-		Button btn = (Button) _view.findViewById(R.id.button1);
+		Button btn = (Button) _view.findViewById(R.id.qrcode_dialog_button1);
 		btn.setOnClickListener(new Button.OnClickListener() {
 
 			@Override

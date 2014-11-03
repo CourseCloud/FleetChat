@@ -7,7 +7,6 @@ int drawable ic_stat_gcm 0x7f020003
 int drawable success 0x7f020004
 int id LinearLayout1 0x7f080000
 int id action_settings 0x7f08001e
-int id button1 0x7f08000c
 int id chat_list_item_imageView1 0x7f080003
 int id chat_list_item_tv_content 0x7f080006
 int id chat_list_item_tv_name 0x7f080004
@@ -17,11 +16,14 @@ int id display 0x7f080007
 int id fragment2_button1 0x7f08000b
 int id fragment2_display 0x7f080009
 int id fragment2_listView1 0x7f08000a
-int id imageView1 0x7f08000d
 int id listView1 0x7f080008
 int id main_activity_frameLayout 0x7f080001
 int id options_clear 0x7f08001f
 int id options_exit 0x7f080020
+int id qrcode_dialog_button1 0x7f08000c
+int id qrcode_dialog_imageView1 0x7f08000d
+int id qrcode_dialog_textView1 0x7f08001b
+int id qrcode_dialog_textView2 0x7f08001d
 int id qrcode_fragment_button1 0x7f080019
 int id qrcode_fragment_checkBox1 0x7f080016
 int id qrcode_fragment_datePicker1 0x7f080015
@@ -35,9 +37,7 @@ int id qrcode_fragment_timePicker1 0x7f080018
 int id scrollView1 0x7f080011
 int id textView1 0x7f08000e
 int id textView2 0x7f08001a
-int id textView3 0x7f08001b
 int id textView4 0x7f08001c
-int id textView5 0x7f08001d
 int layout activity_main 0x7f030000
 int layout activity_qrcode 0x7f030001
 int layout chat_list_item 0x7f030002

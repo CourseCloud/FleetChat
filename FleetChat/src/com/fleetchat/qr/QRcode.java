@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -19,16 +20,27 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
 import com.fleetchat.R;
 
 public class QRcode extends FragmentActivity {
+	public static Dialog qrDialog;
+	public static TextView tv1, tv2;
+	private Button btn1;
+	private ImageView iv1;
+	// dialog params
+	private String expireDate;
+	private String durDate;
+	private String verif = "Verification";
+	private View view;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +50,30 @@ public class QRcode extends FragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new QRcodeFragment()).commit();
 		}
-		
+		initDialog();
 	}
 
-	public static class QRcodeFragment extends DialogFragment {
+	private void initDialog() {
+		LayoutInflater li = LayoutInflater.from(QRcode.this);
+		View view = li.inflate(R.layout.qrcode_fragment_dialog1, null);
+		qrDialog = new Dialog(QRcode.this);
+		qrDialog.setContentView(view);
+		qrDialog.setTitle(verif);
+		tv1 = (TextView) view.findViewById(R.id.qrcode_dialog_textView1);
+		tv2 = (TextView) view.findViewById(R.id.qrcode_dialog_textView2);
+		btn1 = (Button) view.findViewById(R.id.qrcode_dialog_button1);
+		btn1.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				qrDialog.dismiss();
+			}
+		});
+		iv1 = (ImageView) view.findViewById(R.id.qrcode_dialog_imageView1);
+	}
+
+	public static class QRcodeFragment extends Fragment {
 		// UIs
 		private RadioGroup rg;
 		private RadioButton rb1, rb2;
@@ -58,13 +90,6 @@ public class QRcode extends FragmentActivity {
 		private int hour;
 		private int minute;
 
-		// dialog params
-		private String expireDate;
-		private String durDate;
-		private String verif = "Verification";
-		private View view;
-		private Dialog qrDialog;
-
 		// String used to generate qrcode
 		private String strToGen;
 		private String chooseDate1, chooseDate2;
@@ -78,8 +103,6 @@ public class QRcode extends FragmentActivity {
 				Bundle savedInstanceState) {
 			rootView = inflater.inflate(R.layout.qrcode_fragment, container,
 					false);
-			view = inflater.inflate(R.layout.qrcode_fragment_dialog1,
-					container, false);
 			init();
 			return rootView;
 		}
@@ -153,6 +176,9 @@ public class QRcode extends FragmentActivity {
 					// TODO Auto-generated method stub
 					strToGen = "duration: " + chooseDate1 + " expiration: "
 							+ chooseDate2 + "-" + chooseTime2;
+					QRcode.tv1.setText(chooseDate1);
+					QRcode.tv2.setText(chooseDate2 +"  "+ chooseTime2);
+					QRcode.qrDialog.show();
 					Log.d("TimeChoose", strToGen);
 				}
 			});
@@ -200,9 +226,7 @@ public class QRcode extends FragmentActivity {
 				}
 			});
 		}
-		private void initDialog(){
-		}
-		
+
 	}
 
 }
