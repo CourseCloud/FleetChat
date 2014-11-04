@@ -2,14 +2,20 @@ package com.fleetchat.qr;
 
 import java.util.Calendar;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -32,12 +38,18 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
 public class QRcode extends FragmentActivity {
-	// params used in fragment
+
+	private static final String PACKAGE = "com.google.zxing.client.android";
+
+	// params used in fragmentGenerator
 	public static Dialog qrDialog;
 	public static TextView tv1, tv2;
 	private Button btn1;
 	private static ImageView iv1;
 	private static int height, width;
+
+	// params used in fragmentScanner
+	private static AlertDialog.Builder downloadDialog;
 
 	// User's reg_id
 	// TODO from other Activity
@@ -87,6 +99,33 @@ public class QRcode extends FragmentActivity {
 			}
 		});
 		iv1 = (ImageView) view.findViewById(R.id.qrcode_dialog_imageView1);
+	}
+
+	private void showDownloadDialog() {
+		downloadDialog = new AlertDialog.Builder(this);
+		downloadDialog.setTitle("No Barcode Scanner Found");
+		downloadDialog
+				.setMessage("Please download and install Barcode Scanner!");
+		downloadDialog.setPositiveButton("Yes",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialogInterface, int i) {
+						Uri uri = Uri.parse("market://search?q=pname:"
+								+ PACKAGE);
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						try {
+							startActivity(intent);
+						} catch (ActivityNotFoundException ex) {
+							Log.e(ex.toString(),
+									"Play Store is not installed; cannot install Barcode Scanner");
+						}
+					}
+				});
+		downloadDialog.setNegativeButton("No",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialogInterface, int i) {
+						dialogInterface.cancel();
+					}
+				});
 	}
 
 	public static class QRcodeFragment extends Fragment {
@@ -267,6 +306,82 @@ public class QRcode extends FragmentActivity {
 			day = cal.get(Calendar.DAY_OF_MONTH);
 			hour = cal.get(Calendar.HOUR);
 			minute = cal.get(Calendar.MINUTE);
+		}
+	}
+
+	public static class QRcodeFragment2 extends Fragment {
+		// UIs
+		private RadioGroup rg;
+		private RadioButton rb1, rb2;
+		private CheckBox ch1;
+		private DatePicker dp1, dp2;
+		private TimePicker tp;
+		private Button btn_generate;
+		private View rootView;
+
+		// datePicker params
+		private Calendar cal;
+		private int year;
+		private int month;
+		private int day;
+		private int hour;
+		private int minute;
+
+		// String used to generate qrcode
+		private String strToGen;
+		private String chooseDate1, chooseDate2;
+		private String chooseTime2;
+
+		public QRcodeFragment2() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			rootView = inflater.inflate(R.layout.qrcode_fragment2, container,
+					false);
+			init();
+			return rootView;
+		}
+
+		private TextView tvMessage;
+		private Button btScan;
+
+		private void init() {
+			tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
+			btScan = (Button) rootView.findViewById(R.id.qrcode_fragment2_Scan);
+			btScan.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					Intent intent = new Intent(
+							"com.google.zxing.client.android.SCAN");
+					intent.setPackage("com.google.zxing.client.android");
+					intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
+					try {
+						startActivityForResult(intent, 0);
+					} catch (ActivityNotFoundException ex) {
+						QRcode.downloadDialog.show();
+					}
+				}
+
+			});
+		}
+
+		public void onActivityResult(int requestCode, int resultCode,
+				Intent intent) {
+			if (requestCode == 0) {
+				String message = "";
+				if (resultCode == RESULT_OK) {
+					String contents = intent.getStringExtra("SCAN_RESULT");
+					String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
+					// Handle successful scan
+					message = "Content: " + contents + "\nFormat: " + format;
+
+				} else if (resultCode == RESULT_CANCELED) {
+					message = "Scan was Cancelled!";
+				}
+				tvMessage.setText(message);
+			}
 		}
 	}
 
