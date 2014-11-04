@@ -12,9 +12,14 @@
     <string name="qrcode_fragment_rb2">limited</string>
     <string name="qrcode_fragment_ch1">Addable in limited time</string>
     <string name="qrcode_fragment_btn">Generate QR code</string>
+
     <string name="qrcode_fragment_dialog_title">Verification of invitaion</string>
     <string name="qrcode_fragment_dialog_date1">This friendship will end on: </string>
     <string name="qrcode_fragment_dialog_date2">This verification will expire on: </string>
     <string name="qrcode_fragment_dialog_btn1">OK</string>
+    
+    <!-- chat_room.xml -->
+    <string name="chat_room_btn">Send</string>
+    <string name="chat_room_et1">Type here</string>
 
 </resources>

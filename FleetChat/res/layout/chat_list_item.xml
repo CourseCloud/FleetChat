@@ -24,7 +24,7 @@
 
             <TextView
                 android:id="@+id/chat_list_item_tv_name"
-                android:layout_width="187dp"
+                android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Large Textdddddddddddddddddddd"
@@ -38,7 +38,6 @@
                 android:singleLine="true"
                 android:text="Small Text3333333"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -54,9 +53,27 @@
                 android:text="Medium Text33333333333333333333"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <include
-                layout="@layout/message_item" />
+            <FrameLayout
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp" >
 
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/head" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textColor="#ffffff" />
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 

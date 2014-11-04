@@ -25,10 +25,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
+		//TODO 收到訊息後，fileIO到txt檔
 		String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
 		DemoActivity.mDisplay.append(newMessage + "\n");
 		
-		//TODO 收到訊息後，fileIO到txt檔
 
 		// if
 		// (intent.getAction().equalsIgnoreCase(GCMIntentService.DAVID_GCM_RECEIVE_MESSAGE))

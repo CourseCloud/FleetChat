@@ -5,20 +5,20 @@
     android:orientation="vertical" >
     
     <TextView
-        android:id="@+id/fragment2_display"
+        android:id="@+id/chat_list_fragment_display"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
 
     <ListView
-        android:id="@+id/fragment2_listView1"
+        android:id="@+id/chat_list_fragment_listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
     </ListView>
 
     <Button
-        android:id="@+id/fragment2_button1"
+        android:id="@+id/chat_list_fragment_button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />

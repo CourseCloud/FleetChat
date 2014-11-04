@@ -3,6 +3,7 @@ package com.fleetchat.tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Date;
 
 import android.content.Context;
 import android.util.Log;
@@ -20,15 +22,9 @@ public class FileIO {
 	private static final String TAG = "FileIO";
 
 	Context _context;
-	File _file;
-	String _filename;
-	String _fileDir;
 
-	public FileIO(Context context, String filename) {
+	public FileIO(Context context) {
 		_context = context;
-		_filename = filename;
-		_file = new File(context.getFilesDir(), filename);
-		_fileDir = context.getFilesDir().getPath();
 	}
 
 	/**
@@ -38,7 +34,7 @@ public class FileIO {
 	 */
 	public String getChatDir() {
 		File dir = new File(_context.getFilesDir() + File.separator + CHAT_DIR);
-		if(!dir.exists()) {
+		if (!dir.exists()) {
 			dir.mkdirs();
 		}
 		return dir.getPath();
@@ -48,26 +44,59 @@ public class FileIO {
 	 * Get List of FileDir: /data/data/com.fleetchat/files/
 	 */
 	public void getFileDirList() {
+		Log.i(TAG, "getFileDirList");
 		File f = _context.getFilesDir();
 		for (String s : f.list()) {
 			Log.d(TAG, s);
 		}
 	}
+
 	/**
 	 * Get List of FileDir: /data/data/com.fleetchat/files/chat
+	 * 
+	 * @return
 	 */
-	public void getChatDirList() {
+	public String[] getChatDirList() {
+		Log.i(TAG, "getChatDirList");
 		File f = new File(getChatDir());
 		for (String s : f.list()) {
 			Log.d(TAG, s);
 		}
+		return f.list();
 	}
 
-	public void output(String string) {
+	@SuppressWarnings("deprecation")
+	public String getChatDetails(String filename) {
+		String[] details;
+		File f = new File(getChatDir(), filename);
+		Date d = new Date(f.lastModified());
+		String time = TimeUtilities.getTimehhmm(d);
+		return time;
+	}
+
+	public String getChatContent(String contact) {
+
+		File f = new File(getChatDir(), contact);
+		if (!f.exists()) {
+			f.mkdirs();
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (getStringFromFile(f.getPath()).equals("")) {
+			Log.d(TAG, f.getPath() + " : Content empty!");
+			return " ";
+		}
+		return getStringFromFile(f.getPath());
+	}
+
+	public void output(String filename, String string) {
 		FileOutputStream outputStream;
 
 		try {
-			outputStream = _context.openFileOutput(_filename,
+			outputStream = _context.openFileOutput(filename,
 					Context.MODE_PRIVATE);
 			outputStream.write(string.getBytes());
 			outputStream.close();
@@ -133,23 +162,35 @@ public class FileIO {
 		return returnlist;
 	}
 
-	public String getStringFromFile(String filePath) throws Exception {
-		File fl = new File(filePath);
-		FileInputStream fin = new FileInputStream(_file);
-		String ret = convertStreamToString(fin);
-		// Make sure you close all streams.
-		fin.close();
+	public String getStringFromFile(String filePath) {
+		File f = new File(filePath);
+		String ret = "";
+		FileInputStream fin;
+		try {
+			fin = new FileInputStream(f);
+			ret = convertStreamToString(fin);
+			// Make sure you close all streams.
+			fin.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return ret;
 	}
 
-	public String convertStreamToString(InputStream is) throws Exception {
+	public String convertStreamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line).append("\n");
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		reader.close();
 		return sb.toString();
 	}
 }
