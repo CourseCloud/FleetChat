@@ -45,7 +45,7 @@ public class GCMUtilities {
 		}
 	}
 
-	public void postData(final List<String> regIds, final String title,
+	public void postDataSendMessage(final List<String> regIds, final String title,
 			final String message) {
 		final Sender sender = new Sender(CommonUtilities.GOOGLE_API_KEY);
 
@@ -56,8 +56,38 @@ public class GCMUtilities {
 				try {
 					if (regIds.size() > 0) {
 						Message.Builder msg = new Message.Builder();
+						msg.addData(GCMIntentService.EXTRA_ACTION, GCMIntentService.ACTION_SEND_MESSAGE);
 						msg.addData(GCMIntentService.EXTRA_TITLE, title);
 						msg.addData(GCMIntentService.EXTRA_MESSAGE, message);
+
+						MulticastResult MR = sender.sendNoRetry(msg.build(),
+								regIds);
+						Log.e(TAG, MR.toString());
+					}
+				} catch (IOException e) {
+					Log.e(TAG, e.toString());
+				}
+
+			}
+		}).start();
+	}
+	
+
+
+	public void postDataAddFriend(final List<String> regIds, final String date,
+			final String gcmid) {
+		final Sender sender = new Sender(CommonUtilities.GOOGLE_API_KEY);
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					if (regIds.size() > 0) {
+						Message.Builder msg = new Message.Builder();
+						msg.addData(GCMIntentService.EXTRA_ACTION, GCMIntentService.ACTION_ADD_FRIEND);
+						msg.addData(GCMIntentService.EXTRA_DATE, date);
+						msg.addData(GCMIntentService.EXTRA_GCMID, gcmid);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
 								regIds);

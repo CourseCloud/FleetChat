@@ -129,7 +129,7 @@ public class DemoActivity extends Fragment {
 				Log.w(TAG, MainActivity.GCM.getRegistrationId());
 				regIds.add(MainActivity.GCM.getRegistrationId());
 				// regIds.add(CommonUtilities.tempID2);
-				MainActivity.GCM.postData(regIds, "Welcome", "Hello GCM");
+				MainActivity.GCM.postDataSendMessage(regIds, "Welcome", "Hello GCM");
 
 			}
 		});

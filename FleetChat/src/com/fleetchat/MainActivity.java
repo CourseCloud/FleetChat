@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.fleetchat.fragments.Fragment1;
+import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.ChatListFragment;
 import com.fleetchat.tools.GCMUtilities;
 
@@ -42,13 +42,17 @@ public class MainActivity extends FragmentActivity {
 				Fragment fragment = null;
 				switch (tab.getPosition()) {
 				case 0:
-					fragment = new Fragment1();
+					fragment = new ContactFragment();
 					break;
 				case 1:
 					fragment = new ChatListFragment();
 					break;
 				case 2:
 					fragment = new DemoActivity();
+					break;
+				case 3:
+					//TODO (Ho) need put fragment
+					fragment = new Fragment();
 					break;
 				}
 
@@ -85,7 +89,7 @@ public class MainActivity extends FragmentActivity {
 		};
 
 		// Add 3 tabs, specifying the tab's text and TabListener
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 4; i++) {
 			Tab tab = actionBar.newTab().setText("Tab " + (i + 1))
 					.setTabListener(tabListener)
 					.setIcon(R.drawable.ic_launcher);
