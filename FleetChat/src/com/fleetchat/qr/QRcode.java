@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,30 +42,6 @@ import com.google.zxing.WriterException;
 
 public class QRcode extends FragmentActivity {
 
-	private static final String PACKAGE = "com.google.zxing.client.android";
-
-	// Activity UIs
-	private ImageView ivQRgen, ivQRscan;
-	// params used in fragmentGenerator
-	public static Dialog qrDialog;
-	public static TextView tv1, tv2;
-	private Button btn1;
-	private static ImageView iv1;
-	private static int height, width;
-
-	// params used in fragmentScanner
-	private static AlertDialog.Builder downloadDialog;
-
-	// User's reg_id
-	// TODO from other Activity
-	private String reg_id;
-
-	// dialog params
-	private String expireDate;
-	private String durDate;
-	private String verif = "Verification";
-	private View view;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,91 +50,11 @@ public class QRcode extends FragmentActivity {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new QRcodeFragment()).commit();
 		}
-		init();
-		initDialog();
-		getWindowSize();
-	}
-
-	private void init() {
-		ivQRgen = (ImageView) findViewById(R.id.qrcode_activity_btn1);
-		ivQRgen.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				getSupportFragmentManager().beginTransaction()
-						.replace(R.id.container, new QRcodeFragment()).commit();
-
-			}
-		});
-		ivQRscan = (ImageView) findViewById(R.id.qrcode_activity_btn2);
-		ivQRscan.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, new QRcodeFragment2()).commit();
-				Log.i("Click", "click");
-			}
-		});
-	}
-
-	private void getWindowSize() {
-		WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-		Display display = manager.getDefaultDisplay();
-		width = display.getWidth();
-		height = display.getHeight();
-	}
-
-	private void initDialog() {
-		LayoutInflater li = LayoutInflater.from(QRcode.this);
-		View view = li.inflate(R.layout.qrcode_fragment_dialog1, null);
-		qrDialog = new Dialog(QRcode.this);
-		qrDialog.setContentView(view);
-		qrDialog.setTitle(verif);
-		tv1 = (TextView) view.findViewById(R.id.qrcode_dialog_textView1);
-		tv2 = (TextView) view.findViewById(R.id.qrcode_dialog_textView2);
-		btn1 = (Button) view.findViewById(R.id.qrcode_dialog_button1);
-		btn1.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				qrDialog.dismiss();
-			}
-		});
-		iv1 = (ImageView) view.findViewById(R.id.qrcode_dialog_imageView1);
-	}
-
-	private void showDownloadDialog() {
-		downloadDialog = new AlertDialog.Builder(this);
-		downloadDialog.setTitle("No Barcode Scanner Found");
-		downloadDialog
-				.setMessage("Please download and install Barcode Scanner!");
-		downloadDialog.setPositiveButton("Yes",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialogInterface, int i) {
-						Uri uri = Uri.parse("market://search?q=pname:"
-								+ PACKAGE);
-						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-						try {
-							startActivity(intent);
-						} catch (ActivityNotFoundException ex) {
-							Log.e(ex.toString(),
-									"Play Store is not installed; cannot install Barcode Scanner");
-						}
-					}
-				});
-		downloadDialog.setNegativeButton("No",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialogInterface, int i) {
-						dialogInterface.cancel();
-					}
-				});
 	}
 
 	public static class QRcodeFragment extends Fragment {
+		//tab UI
+		private ImageView ivQRgen, ivQRscan;
 		// UIs
 		private RadioGroup rg;
 		private RadioButton rb1, rb2;
@@ -166,6 +63,17 @@ public class QRcode extends FragmentActivity {
 		private TimePicker tp;
 		private Button btn_generate;
 		private View rootView;
+
+		// dialog params
+		public static Dialog qrDialog;
+		public static TextView tv1, tv2;
+		private Button btn1;
+		private static ImageView iv1;
+		private static int height, width;
+		private String expireDate;
+		private String durDate;
+		private String verif = "Verification";
+		private View view;
 
 		// datePicker params
 		private Calendar cal;
@@ -189,6 +97,8 @@ public class QRcode extends FragmentActivity {
 			rootView = inflater.inflate(R.layout.qrcode_fragment, container,
 					false);
 			init();
+			initDialog();
+			getWindowSize();
 			return rootView;
 		}
 
@@ -204,7 +114,6 @@ public class QRcode extends FragmentActivity {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView,
 						boolean isChecked) {
-					// TODO Auto-generated method stub
 					chooseDate2 = "" + " " + year + "/" + (month + 1) + "/"
 							+ day;
 					chooseTime2 = "" + " " + hour + ":" + minute;
@@ -231,7 +140,6 @@ public class QRcode extends FragmentActivity {
 				public void onCheckedChanged(RadioGroup group, int checkedId) {
 					chooseDate1 = "" + " " + year + "/" + (month + 1) + "/"
 							+ day;
-					// TODO Auto-generated method stub
 					if (rb1.isChecked()) {
 						chooseDate1 = "permenant permission";
 
@@ -268,7 +176,6 @@ public class QRcode extends FragmentActivity {
 
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					strToGen = "duration: " + chooseDate1 + " expiration: "
 							+ chooseDate2 + "-" + chooseTime2;
 
@@ -286,10 +193,9 @@ public class QRcode extends FragmentActivity {
 					} catch (WriterException e) {
 						e.printStackTrace();
 					}
-					QRcode.tv1.setText(chooseDate1);
-					QRcode.tv2.setText(chooseDate2 + "  " + chooseTime2);
-					QRcode.qrDialog.show();
-					Log.d("TimeChoose", strToGen);
+					tv1.setText(chooseDate1);
+					tv2.setText(chooseDate2 + "  " + chooseTime2);
+					qrDialog.show();
 				}
 			});
 		}
@@ -328,6 +234,25 @@ public class QRcode extends FragmentActivity {
 			});
 		}
 
+		private void initDialog() {
+			LayoutInflater li = LayoutInflater.from(getActivity());
+			View view = li.inflate(R.layout.qrcode_fragment_dialog1, null);
+			qrDialog = new Dialog(getActivity());
+			qrDialog.setContentView(view);
+			qrDialog.setTitle(verif);
+			tv1 = (TextView) view.findViewById(R.id.qrcode_dialog_textView1);
+			tv2 = (TextView) view.findViewById(R.id.qrcode_dialog_textView2);
+			btn1 = (Button) view.findViewById(R.id.qrcode_dialog_button1);
+			btn1.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					qrDialog.dismiss();
+				}
+			});
+			iv1 = (ImageView) view.findViewById(R.id.qrcode_dialog_imageView1);
+		}
+
 		private void initCalendar() {
 			cal = Calendar.getInstance();
 			year = cal.get(Calendar.YEAR);
@@ -336,9 +261,21 @@ public class QRcode extends FragmentActivity {
 			hour = cal.get(Calendar.HOUR);
 			minute = cal.get(Calendar.MINUTE);
 		}
+
+		private void getWindowSize() {
+			WindowManager manager = (WindowManager) getActivity()
+					.getSystemService(Service.WINDOW_SERVICE);
+
+			Display display = manager.getDefaultDisplay();
+			width = display.getWidth();
+			height = display.getHeight();
+		}
 	}
 
 	public static class QRcodeFragment2 extends Fragment {
+		// download package
+		private static final String PACKAGE = "com.google.zxing.client.android";
+
 		// UIs
 		private RadioGroup rg;
 		private RadioButton rb1, rb2;
@@ -360,6 +297,10 @@ public class QRcode extends FragmentActivity {
 		private String strToGen;
 		private String chooseDate1, chooseDate2;
 		private String chooseTime2;
+
+		// User's reg_id
+		// TODO from other Activity
+		private String reg_id;
 
 		public QRcodeFragment2() {
 		}
@@ -389,7 +330,7 @@ public class QRcode extends FragmentActivity {
 					try {
 						startActivityForResult(intent, 0);
 					} catch (ActivityNotFoundException ex) {
-						QRcode.downloadDialog.show();
+						showDownloadDialog();
 					}
 				}
 
@@ -412,6 +353,37 @@ public class QRcode extends FragmentActivity {
 				tvMessage.setText(message);
 			}
 		}
-	}
 
+		private void showDownloadDialog() {
+			AlertDialog.Builder downloadDialog = new AlertDialog.Builder(
+					getActivity());
+			downloadDialog.setTitle("No Barcode Scanner Found");
+			downloadDialog
+					.setMessage("Please download and install Barcode Scanner!");
+			downloadDialog.setPositiveButton("Yes",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialogInterface,
+								int i) {
+							Uri uri = Uri.parse("market://search?q=pname:"
+									+ PACKAGE);
+							Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+							try {
+								startActivity(intent);
+							} catch (ActivityNotFoundException ex) {
+								Log.e(ex.toString(),
+										"Play Store is not installed; cannot install Barcode Scanner");
+							}
+						}
+					});
+			downloadDialog.setNegativeButton("No",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialogInterface,
+								int i) {
+							dialogInterface.cancel();
+						}
+					});
+			downloadDialog.show();
+		}
+
+	}
 }
