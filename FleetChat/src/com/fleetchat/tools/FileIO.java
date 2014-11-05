@@ -193,4 +193,8 @@ public class FileIO {
 		}
 		return sb.toString();
 	}
+	
+	public void readQRString(String s){
+		
+	}
 }

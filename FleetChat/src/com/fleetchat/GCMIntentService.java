@@ -36,8 +36,15 @@ public class GCMIntentService extends GCMBaseIntentService {
     private static final String TAG = "GCMIntentService";
     
 	public static final String EXTRA_KEY_GCM_TOKEN = "EXTRA_KEY_GCM_TOKEN";
-	public static final String EXTRA_TITLE = "title";
-	public static final String EXTRA_MESSAGE = "message";
+	public static final String EXTRA_TITLE = "EXTRA_TITLE";
+	public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+	public static final String EXTRA_DATE = "EXTRA_DATE";
+	public static final String EXTRA_GCMID = "EXTRA_GCMID";
+	
+
+	public static final String EXTRA_ACTION = "EXTRA_ACTION";
+	public static final String ACTION_ADD_FRIEND = "ACTION_ADD_FRIEND";
+	public static final String ACTION_SEND_MESSAGE = "ACTION_SEND_MESSAGE";
 
     public GCMIntentService() {
         super(SENDER_ID);
