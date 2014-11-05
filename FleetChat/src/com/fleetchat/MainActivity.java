@@ -46,7 +46,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 1:
 					fragment = new ChatListFragment();
-					break;
+					break; 
 				case 2:
 					fragment = new DemoActivity();
 					break;
