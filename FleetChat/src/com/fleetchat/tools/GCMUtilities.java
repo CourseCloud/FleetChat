@@ -59,6 +59,8 @@ public class GCMUtilities {
 						msg.addData(GCMIntentService.EXTRA_ACTION, GCMIntentService.ACTION_SEND_MESSAGE);
 						msg.addData(GCMIntentService.EXTRA_TITLE, title);
 						msg.addData(GCMIntentService.EXTRA_MESSAGE, message);
+						String date = TimeUtilities.getTimeyyyyMMddhhmmss();
+						msg.addData(GCMIntentService.EXTRA_DATE, date);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
 								regIds);
