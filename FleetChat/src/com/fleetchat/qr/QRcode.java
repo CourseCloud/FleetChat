@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +43,8 @@ public class QRcode extends FragmentActivity {
 
 	private static final String PACKAGE = "com.google.zxing.client.android";
 
+	// Activity UIs
+	private ImageView ivQRgen, ivQRscan;
 	// params used in fragmentGenerator
 	public static Dialog qrDialog;
 	public static TextView tv1, tv2;
@@ -67,10 +71,35 @@ public class QRcode extends FragmentActivity {
 		setContentView(R.layout.activity_qrcode);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new QRcodeFragment()).commit();
+					.replace(R.id.container, new QRcodeFragment()).commit();
 		}
+		init();
 		initDialog();
 		getWindowSize();
+	}
+
+	private void init() {
+		ivQRgen = (ImageView) findViewById(R.id.qrcode_activity_btn1);
+		ivQRgen.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getSupportFragmentManager().beginTransaction()
+						.replace(R.id.container, new QRcodeFragment()).commit();
+
+			}
+		});
+		ivQRscan = (ImageView) findViewById(R.id.qrcode_activity_btn2);
+		ivQRscan.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, new QRcodeFragment2()).commit();
+				Log.i("Click", "click");
+			}
+		});
 	}
 
 	private void getWindowSize() {
