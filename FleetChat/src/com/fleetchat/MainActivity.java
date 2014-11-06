@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.ChatListFragment;
+import com.fleetchat.fragments.DemoFragment;
 import com.fleetchat.tools.GCMUtilities;
 
 public class MainActivity extends FragmentActivity {

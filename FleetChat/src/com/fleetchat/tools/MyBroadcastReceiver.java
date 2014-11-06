@@ -1,7 +1,7 @@
 package com.fleetchat.tools;
 
-import com.fleetchat.DemoFragment;
 import com.fleetchat.GCMIntentService;
+import com.fleetchat.fragments.DemoFragment;
 import com.fleetchat.util.GCMConstants;
 
 import android.content.BroadcastReceiver;

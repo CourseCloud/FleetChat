@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fleetchat;
+package com.fleetchat.fragments;
 
 import static com.fleetchat.tools.CommonUtilities.SENDER_ID;
 import static com.fleetchat.tools.CommonUtilities.SERVER_URL;
@@ -31,6 +31,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.fleetchat.MainActivity;
+import com.fleetchat.R;
+import com.fleetchat.R.id;
+import com.fleetchat.R.layout;
+import com.fleetchat.R.string;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.ConnectionDetector;
 import com.fleetchat.tools.TimeUtilities;

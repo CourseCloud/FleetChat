@@ -5,14 +5,14 @@
     android:orientation="vertical" >
     
     <TextView
-        android:id="@+id/display"
+        android:id="@+id/contact_fragment_display"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="f1" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/contact_fragment_listView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1" >
