@@ -1,7 +1,5 @@
 package com.fleetchat.tools;
 
-import static com.fleetchat.tools.CommonUtilities.EXTRA_MESSAGE;
-
 import com.fleetchat.DemoActivity;
 import com.fleetchat.GCMIntentService;
 
@@ -29,25 +27,40 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		// TODO 收到訊息後，fileIO到txt檔
-		String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
-		DemoActivity.mDisplay.append(newMessage + "\n");
-		Bundle b = intent.getExtras();
-		if (b != null) {
-			// ACTION_ADD_FRIEND
-			if (b.getString(GCMIntentService.EXTRA_ACTION).equalsIgnoreCase(
-					GCMIntentService.ACTION_ADD_FRIEND)) {
+		// String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
+		// DemoActivity.mDisplay.append(newMessage + "\n");
 
-				Log.d(TAG, "get ACTION_ADD_FRIEND !!");
-
-				// ACTION_SEND_MESSAGE
-			} else if (b.getString(GCMIntentService.EXTRA_ACTION)
-					.equalsIgnoreCase(GCMIntentService.ACTION_SEND_MESSAGE)) {
-
-				Log.d(TAG, "get ACTION_SEND_MESSAGE !!");
-
-			}
+		if (intent.getAction().equalsIgnoreCase(
+				CommonUtilities.DISPLAY_MESSAGE_ACTION)) {
+			Log.d(TAG,
+					"get!!"
+							+ intent.getExtras().getString(
+									GCMIntentService.EXTRA_ACTION));
+			Log.d(TAG,
+					"get2!!"
+							+ intent.getExtras().getString(
+									GCMIntentService.EXTRA_DATE));
 		}
+		
+		
+		// ACTION_ADD_FRIEND
+		if(intent.getStringExtra(GCMIntentService.ACTION_ADD_FRIEND) !=null){
+
+			Log.d(TAG, "get ACTION_ADD_FRIEND !!");
+		}
+		// ACTION_SEND_MESSAGE
+		if(intent.getAction().equals(GCMIntentService.ACTION_SEND_MESSAGE)){
+
+			// TODO 收到訊息後，fileIO到txt檔 
+			Log.d(TAG, "get ACTION_SEND_MESSAGE !!");
+			
+
+			Log.d(TAG, intent.getStringExtra(GCMIntentService.EXTRA_TITLE));
+			Log.d(TAG, intent.getStringExtra(GCMIntentService.EXTRA_MESSAGE));
+			Log.d(TAG, intent.getStringExtra(GCMIntentService.EXTRA_DATE));
+		}
+		
+		
 
 		// if
 		// (intent.getAction().equalsIgnoreCase(GCMIntentService.DAVID_GCM_RECEIVE_MESSAGE))
@@ -73,5 +86,38 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 		// }
 		// }
 		// }
+	}
+
+	/**
+	 * Notifies UI to display a message.
+	 * <p>
+	 * This method is defined in the common helper because it's used both by the
+	 * UI and the background service.
+	 *
+	 * @param context
+	 *            application's context.
+	 * @param message
+	 *            message to be displayed.
+	 */
+	public static void displayMessage(Context context, String message) {
+		Intent intent = new Intent(CommonUtilities.DISPLAY_MESSAGE_ACTION);
+		intent.putExtra(GCMIntentService.EXTRA_MESSAGE, message);
+		context.sendBroadcast(intent);
+	}
+
+	public static void addFriend(Context context, String date) {
+		Intent intent = new Intent(GCMIntentService.ACTION_ADD_FRIEND);
+		intent.putExtra(GCMIntentService.EXTRA_DATE, date);
+		intent.putExtra(GCMIntentService.EXTRA_DATE, date);
+		context.sendBroadcast(intent);
+	}
+
+	public static void sendMessage(Context context, String title,
+			String message, String date) {
+		Intent intent = new Intent(GCMIntentService.ACTION_SEND_MESSAGE);
+		intent.putExtra(GCMIntentService.EXTRA_TITLE, title);
+		intent.putExtra(GCMIntentService.EXTRA_MESSAGE, message);
+		intent.putExtra(GCMIntentService.EXTRA_DATE, date);
+		context.sendBroadcast(intent);
 	}
 }
