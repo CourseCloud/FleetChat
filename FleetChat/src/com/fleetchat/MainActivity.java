@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity {
 					fragment = new ChatListFragment();
 					break; 
 				case 2:
-					fragment = new DemoActivity();
+					fragment = new DemoFragment();
 					break;
 				case 3:
 					//TODO (Ho) need put fragment

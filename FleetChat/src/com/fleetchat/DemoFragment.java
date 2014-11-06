@@ -33,13 +33,14 @@ import android.widget.TextView;
 
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.ConnectionDetector;
+import com.fleetchat.tools.TimeUtilities;
 import com.google.android.gcm.GCMRegistrar;
 
 /**
  * Main UI for the demo app.
  */
 @SuppressWarnings("deprecation")
-public class DemoActivity extends Fragment {
+public class DemoFragment extends Fragment {
 
 	protected static final String TAG = "DemoActivity";
 	// UI
@@ -110,7 +111,7 @@ public class DemoActivity extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		_view = inflater.inflate(R.layout.main2, container, false);
+		_view = inflater.inflate(R.layout.demo_fragment, container, false);
 		setView();
 		temp();
 		return _view;
@@ -118,7 +119,7 @@ public class DemoActivity extends Fragment {
 
 	private void setView() {
 		mDisplay = (TextView) _view.findViewById(R.id.display);
-		Button btn = (Button) _view.findViewById(R.id.qrcode_dialog_button1);
+		Button btn = (Button) _view.findViewById(R.id.demo_fragment_button1);
 		btn.setOnClickListener(new Button.OnClickListener() {
 
 			@Override
@@ -129,7 +130,28 @@ public class DemoActivity extends Fragment {
 				Log.w(TAG, MainActivity.GCM.getRegistrationId());
 				regIds.add(MainActivity.GCM.getRegistrationId());
 				// regIds.add(CommonUtilities.tempID2);
-				MainActivity.GCM.postDataSendMessage(regIds, "Welcome", "Hello GCM");
+				MainActivity.GCM.postDataSendMessage(regIds, "Welcome",
+						"Hello GCM");
+
+			}
+		});
+
+		Button btn2 = (Button) _view.findViewById(R.id.demo_fragment_button2);
+		btn2.setOnClickListener(new Button.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				List<String> regIds = new ArrayList<String>();
+
+				Log.w(TAG, "onClick");
+				Log.w(TAG, MainActivity.GCM.getRegistrationId());
+				// TODO change to someone's gcmid
+				regIds.add(MainActivity.GCM.getRegistrationId());
+				// regIds.add(CommonUtilities.tempID2);
+				
+				MainActivity.GCM.postDataAddFriend(regIds,
+						TimeUtilities.getTimeyyyyMMddhhmmss(),
+						MainActivity.GCM.getRegistrationId());
 
 			}
 		});

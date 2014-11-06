@@ -8,13 +8,14 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.fleetchat.GCMIntentService;
+import com.fleetchat.util.GCMConstants;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
 
 @SuppressWarnings("deprecation")
-public class GCMUtilities {
+public class GCMUtilities implements GCMConstants {
 	private static final String TAG = "GCMUtilities";
 	Context _context;
 	MyBroadcastReceiver receiver;
@@ -32,7 +33,7 @@ public class GCMUtilities {
 	}
 
 	public void onResume() {
-		IntentFilter filter = new IntentFilter(CommonUtilities.DISPLAY_MESSAGE_ACTION);
+		IntentFilter filter = new IntentFilter(DISPLAY_MESSAGE_ACTION);
 		_context.registerReceiver(receiver, filter);
 	}
 
@@ -56,11 +57,11 @@ public class GCMUtilities {
 				try {
 					if (regIds.size() > 0) {
 						Message.Builder msg = new Message.Builder();
-						msg.addData(GCMIntentService.EXTRA_ACTION, GCMIntentService.ACTION_SEND_MESSAGE);
-						msg.addData(GCMIntentService.EXTRA_TITLE, title);
-						msg.addData(GCMIntentService.EXTRA_MESSAGE, message);
+						msg.addData(EXTRA_ACTION, ACTION_SEND_MESSAGE);
+						msg.addData(EXTRA_TITLE, title);
+						msg.addData(EXTRA_MESSAGE, message);
 						String date = TimeUtilities.getTimeyyyyMMddhhmmss();
-						msg.addData(GCMIntentService.EXTRA_DATE, date);
+						msg.addData(EXTRA_DATE, date);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
 								regIds);
@@ -87,9 +88,9 @@ public class GCMUtilities {
 				try {
 					if (regIds.size() > 0) {
 						Message.Builder msg = new Message.Builder();
-						msg.addData(GCMIntentService.EXTRA_ACTION, GCMIntentService.ACTION_ADD_FRIEND);
-						msg.addData(GCMIntentService.EXTRA_DATE, date);
-						msg.addData(GCMIntentService.EXTRA_GCMID, gcmid);
+						msg.addData(EXTRA_ACTION, ACTION_ADD_FRIEND);
+						msg.addData(EXTRA_DATE, date);
+						msg.addData(EXTRA_GCMID, gcmid);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
 								regIds);

@@ -16,7 +16,6 @@
 package com.fleetchat;
 
 import static com.fleetchat.tools.CommonUtilities.SENDER_ID;
-import static com.fleetchat.tools.CommonUtilities.displayMessage;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,27 +23,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.fleetchat.R;
 import com.fleetchat.tools.MyBroadcastReceiver;
+import com.fleetchat.util.GCMConstants;
 import com.google.android.gcm.GCMBaseIntentService;
 
 /**
  * IntentService responsible for handling GCM messages.
  */
 @SuppressWarnings("deprecation")
-public class GCMIntentService extends GCMBaseIntentService {
-
+public class GCMIntentService extends GCMBaseIntentService implements
+		GCMConstants {
 	private static final String TAG = "GCMIntentService";
-
-	public static final String EXTRA_KEY_GCM_TOKEN = "EXTRA_KEY_GCM_TOKEN";
-	public static final String EXTRA_TITLE = "EXTRA_TITLE";
-	public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
-	public static final String EXTRA_DATE = "EXTRA_DATE";
-	public static final String EXTRA_GCMID = "EXTRA_GCMID";
-
-	public static final String EXTRA_ACTION = "EXTRA_ACTION";
-	public static final String ACTION_ADD_FRIEND = "ACTION_ADD_FRIEND";
-	public static final String ACTION_SEND_MESSAGE = "ACTION_SEND_MESSAGE";
 
 	public GCMIntentService() {
 		super(SENDER_ID);
@@ -53,7 +42,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
 		Log.i(TAG, "Device registered: regId = " + registrationId);
-		displayMessage(context,
+		MyBroadcastReceiver.displayMessage(context,
 				getString(R.string.gcm_registered, registrationId));
 		// ServerUtilities.register(context, registrationId);
 	}
@@ -61,37 +50,35 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
 		Log.i(TAG, "Device unregistered");
-		displayMessage(context, getString(R.string.gcm_unregistered));
+		MyBroadcastReceiver.displayMessage(context,
+				getString(R.string.gcm_unregistered));
 		// ServerUtilities.unregister(context, registrationId);
 	}
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		Log.i(TAG, "Received message. Extras: " + intent.getExtras());
-		String message = getString(R.string.gcm_message);
-		displayMessage(context, message);
-		displayMessage(context, intent.getExtras().getString(EXTRA_MESSAGE, ""));
 
-		String action = intent.getStringExtra(GCMIntentService.EXTRA_ACTION);
-		if (action != null) {
-			if (action.equals(GCMIntentService.ACTION_ADD_FRIEND)) {
+		// String action = intent.getStringExtra(EXTRA_ACTION);
+		// //
+		// if (action != null) {
+		// if (action.equals(ACTION_ADD_FRIEND)) {
+		// MyBroadcastReceiver.addFriend(context, intent.getExtras());
+		// } else if (action.equals(ACTION_SEND_MESSAGE)) {
+		// }
+		// }
+		MyBroadcastReceiver.sendMessage(context, intent.getExtras());
 
-			} else if (action.equals(GCMIntentService.ACTION_SEND_MESSAGE)) {
-				MyBroadcastReceiver.sendMessage(context, intent.getExtras()
-						.getString(EXTRA_TITLE, ""), intent.getExtras()
-						.getString(EXTRA_MESSAGE, ""), intent.getExtras()
-						.getString(EXTRA_DATE, ""));
-			}
-		}
+		// TODO notice should change title
 		// notifies user
-		generateNotification(context, message);
+		generateNotification(context, getString(R.string.gcm_message));
 	}
 
 	@Override
 	protected void onDeletedMessages(Context context, int total) {
 		Log.i(TAG, "Received deleted messages notification");
 		String message = getString(R.string.gcm_deleted, total);
-		displayMessage(context, message);
+		MyBroadcastReceiver.displayMessage(context, message);
 		// notifies user
 		generateNotification(context, message);
 	}
@@ -99,14 +86,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	public void onError(Context context, String errorId) {
 		Log.i(TAG, "Received error: " + errorId);
-		displayMessage(context, getString(R.string.gcm_error, errorId));
+		MyBroadcastReceiver.displayMessage(context,
+				getString(R.string.gcm_error, errorId));
 	}
 
 	@Override
 	protected boolean onRecoverableError(Context context, String errorId) {
 		// log message
 		Log.i(TAG, "Received recoverable error: " + errorId);
-		displayMessage(context,
+		MyBroadcastReceiver.displayMessage(context,
 				getString(R.string.gcm_recoverable_error, errorId));
 		return super.onRecoverableError(context, errorId);
 	}

@@ -11,7 +11,14 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/qrcode_dialog_button1"
+        android:id="@+id/demo_fragment_button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.50"
+        android:text="Button2" />
+
+    <Button
+        android:id="@+id/demo_fragment_button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Button" />
