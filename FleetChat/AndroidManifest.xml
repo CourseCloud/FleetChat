@@ -16,6 +16,14 @@
 
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- nfc permissions -->
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" >
+    </uses-feature>
+
+    <uses-permission android:name="android.permission.NFC" >
+    </uses-permission>
 
     <!--
      Creates a custom permission so only this app can receive its messages.
