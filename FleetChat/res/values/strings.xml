@@ -21,5 +21,12 @@
     <!-- chat_room.xml -->
     <string name="chat_room_btn">Send</string>
     <string name="chat_room_et1">Type here</string>
+    
+    <!-- nfc fragment -->
+    <string name="nfcpush_fragment_tv">Permission</string>
+    <string name="nfcpush_fragment_rb1">permenant</string>
+    <string name="nfcpush_fragment_rb2">limited</string>
+    <string name="nfcpush_fragment_ch1">Addable in limited time</string>
+    <string name="nfcpush_fragment_btn">Start NFC delivery</string>
 
 </resources>
