@@ -11,13 +11,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.util.Log;
 
 public class FileIO {
 	private static final String CHAT_DIR = "chat";
+	private static final String CONTACT = "contact";
 
 	private static final String TAG = "FileIO";
 
@@ -65,9 +68,7 @@ public class FileIO {
 		return f.list();
 	}
 
-	@SuppressWarnings("deprecation")
 	public String getChatDetails(String filename) {
-		String[] details;
 		File f = new File(getChatDir(), filename);
 		Date d = new Date(f.lastModified());
 		String time = TimeUtilities.getTimehhmm(d);
@@ -92,20 +93,8 @@ public class FileIO {
 		return getStringFromFile(f.getPath());
 	}
 
-	public void output(String filename, String string) {
-		FileOutputStream outputStream;
-
-		try {
-			outputStream = _context.openFileOutput(filename,
-					Context.MODE_PRIVATE);
-			outputStream.write(string.getBytes());
-			outputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void writeFileToChat(String filename, String string) {
+
 		writeFile(getChatDir(), filename, string);
 	}
 
@@ -113,6 +102,9 @@ public class FileIO {
 		FileWriter fw;
 		try {
 			File f = new File(dir, filename);
+			if(!f.exists()){
+				f.createNewFile();
+			}
 			fw = new FileWriter(f, true);
 			fw.append(string);
 			fw.close();
@@ -121,26 +113,44 @@ public class FileIO {
 		}
 	}
 
-	public void input() {
-
-		// String returnlist = null;
-		// try {
-		//
-		// FileInputStream fis = _context.openFileInput(_filename);
-		// ObjectInputStream ois = new ObjectInputStream(fis);
-		// returnlist = ois.readObject();
-		// ois.close();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// return returnlist;
+	public void writeContact(ArrayList<HashMap<String, Object>> list) {
+		File file = new File(_context.getFilesDir(), CONTACT);
+		writeObject(file, list);
 	}
 
-	public void saveObject(String filename, Object object) {
+	public void addContact(HashMap<String, Object> item) {
+		File file = new File(_context.getFilesDir(), CONTACT);
+		ArrayList<HashMap<String, Object>> list;
+		if (getContact() == null) {
+			list = new ArrayList<HashMap<String, Object>>();
+		} else {
+			list = getContact();
+		}
+		list.add(item);
+		writeObject(file, list);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ArrayList<HashMap<String, Object>> getContact() {
+		File file = new File(_context.getFilesDir(), CONTACT);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return (ArrayList<HashMap<String, Object>>) readObject(file);
+	}
+
+	/**************************************************************************/
+	/** Private **/
+	/**************************************************************************/
+
+	private void writeObject(File file, Object object) {
 
 		try {
-			FileOutputStream fos = _context.openFileOutput(filename,
-					Context.MODE_PRIVATE);
+			FileOutputStream fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(object);
 			oos.close();
@@ -149,10 +159,10 @@ public class FileIO {
 		}
 	}
 
-	public Object loadObject(String filename) {
+	private Object readObject(File file) {
 		Object returnlist = null;
 		try {
-			FileInputStream fis = _context.openFileInput(filename);
+			FileInputStream fis = new FileInputStream(file);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			returnlist = ois.readObject();
 			ois.close();
@@ -162,7 +172,7 @@ public class FileIO {
 		return returnlist;
 	}
 
-	public String getStringFromFile(String filePath) {
+	private String getStringFromFile(String filePath) {
 		File f = new File(filePath);
 		String ret = "";
 		FileInputStream fin;
@@ -179,7 +189,10 @@ public class FileIO {
 		return ret;
 	}
 
-	public String convertStreamToString(InputStream is) {
+	/**
+	 * getStringFromFile's sub-function.
+	 */
+	private String convertStreamToString(InputStream is) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -193,5 +206,5 @@ public class FileIO {
 		}
 		return sb.toString();
 	}
-	
+
 }

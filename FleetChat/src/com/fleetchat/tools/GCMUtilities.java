@@ -89,6 +89,7 @@ public class GCMUtilities implements GCMConstants {
 					if (regIds.size() > 0) {
 						Message.Builder msg = new Message.Builder();
 						msg.addData(EXTRA_ACTION, ACTION_ADD_FRIEND);
+						msg.addData(EXTRA_NAME, "Annoymous");
 						msg.addData(EXTRA_DATE, date);
 						msg.addData(EXTRA_GCMID, gcmid);
 

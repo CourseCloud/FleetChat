@@ -33,9 +33,6 @@ import android.widget.TextView;
 
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
-import com.fleetchat.R.id;
-import com.fleetchat.R.layout;
-import com.fleetchat.R.string;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.ConnectionDetector;
 import com.fleetchat.tools.TimeUtilities;
@@ -150,6 +147,7 @@ public class DemoFragment extends Fragment {
 
 				Log.w(TAG, "onClick");
 				Log.w(TAG, MainActivity.GCM.getRegistrationId());
+				
 				// TODO change to someone's gcmid
 				regIds.add(MainActivity.GCM.getRegistrationId());
 				// regIds.add(CommonUtilities.tempID2);

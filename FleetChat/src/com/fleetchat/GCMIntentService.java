@@ -42,8 +42,8 @@ public class GCMIntentService extends GCMBaseIntentService implements
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
 		Log.i(TAG, "Device registered: regId = " + registrationId);
-		MyBroadcastReceiver.displayMessage(context,
-				getString(R.string.gcm_registered, registrationId));
+//		MyBroadcastReceiver.displayMessage(context,
+//				getString(R.string.gcm_registered, registrationId));
 		// ServerUtilities.register(context, registrationId);
 	}
 

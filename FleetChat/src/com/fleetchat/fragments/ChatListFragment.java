@@ -78,8 +78,6 @@ public class ChatListFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// lst1.get(position) = David, Rick or Jay，可搭配AlertDialog顯示之
-				// 關於 Toast 可參考p.89
 				Toast.makeText(getActivity(), "" + list.get(position),
 						Toast.LENGTH_SHORT).show();
 

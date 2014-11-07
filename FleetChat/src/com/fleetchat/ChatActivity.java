@@ -1,29 +1,23 @@
 package com.fleetchat;
 
-import com.fleetchat.fragments.ChatListFragment;
-import com.fleetchat.tools.FileIO;
-import com.fleetchat.tools.StringUtilities;
-import com.fleetchat.tools.TimeUtilities;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
-import android.text.format.Time;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
-public class ChatActivity extends Activity {
+import com.fleetchat.tools.FileIO;
+import com.fleetchat.tools.StringUtilities;
+import com.fleetchat.util.GCMConstants;
+
+public class ChatActivity extends Activity implements GCMConstants {
 	// UI
 	private EditText _etContent;
 	private EditText _etMessage;
@@ -49,9 +43,17 @@ public class ChatActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowHomeEnabled(false);
 
-		_contact = getIntent().getExtras().getString(
-				ChatListFragment.CHAT_TITLE, "");
-		actionBar.setTitle(_contact);
+		_contact = getIntent().getStringExtra(EXTRA_GCMID);
+		ArrayList<HashMap<String, Object>> list = fio.getContact();
+		for (HashMap<String, Object> item : list) {
+
+			Log.d("DEBUG","count");
+			if (item.get(EXTRA_GCMID).equals(_contact)) {
+				Log.d("DEBUG","in");
+				actionBar.setTitle((CharSequence) item.get(EXTRA_NAME));
+				break;
+			}
+		}
 	}
 
 	private void setView() {
@@ -82,6 +84,7 @@ public class ChatActivity extends Activity {
 		// Button
 		_btnSend.setOnClickListener(new Button.OnClickListener() {
 
+			//	TODO file IO problem , crash!!!!!!!!
 			@Override
 			public void onClick(View v) {
 				fio.writeFileToChat(_contact, _etMessage.getText().toString()
@@ -89,7 +92,7 @@ public class ChatActivity extends Activity {
 
 				_etMessage.setText("");
 				_etContent.setText(fio.getChatContent(_contact));
-//				_etContent.setSelection(_etContent.getSelectionEnd());
+				// _etContent.setSelection(_etContent.getSelectionEnd());
 				_etContent.setSelection(_etContent.getSelectionStart());
 			}
 		});
@@ -101,9 +104,9 @@ public class ChatActivity extends Activity {
 		}
 
 	}
-	
-	private void set(){
-		
+
+	private void set() {
+
 	}
 
 }

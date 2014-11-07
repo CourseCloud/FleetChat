@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.ChatListFragment;
 import com.fleetchat.fragments.DemoFragment;
+import com.fleetchat.fragments.QRTabFragment;
 import com.fleetchat.tools.GCMUtilities;
 
 public class MainActivity extends FragmentActivity {
@@ -52,8 +53,7 @@ public class MainActivity extends FragmentActivity {
 					fragment = new DemoFragment();
 					break;
 				case 3:
-					//TODO (Ho) need put fragment
-					fragment = new Fragment();
+					fragment = new QRTabFragment();
 					break;
 				}
 
@@ -77,14 +77,12 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onTabUnselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onTabReselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-				// TODO Auto-generated method stub
 
 			}
 		};

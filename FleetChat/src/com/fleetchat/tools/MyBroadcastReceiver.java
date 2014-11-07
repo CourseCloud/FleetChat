@@ -1,6 +1,9 @@
 package com.fleetchat.tools;
 
+import java.util.HashMap;
+
 import com.fleetchat.GCMIntentService;
+import com.fleetchat.R;
 import com.fleetchat.fragments.DemoFragment;
 import com.fleetchat.util.GCMConstants;
 
@@ -26,13 +29,15 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 		mTextView = textView;
 	}
 
+	String action = "";
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
 		// String newMessage = intent.getExtras().getString(EXTRA_MESSAGE);
 		// DemoActivity.mDisplay.append(newMessage + "\n");
 
-		String action = intent.getStringExtra(EXTRA_ACTION);
+		action = intent.getStringExtra(EXTRA_ACTION);
 
 		// ACTION_SEND_MESSAGE
 		if (action.equals(ACTION_SEND_MESSAGE)) {
@@ -47,6 +52,15 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 		// ACTION_ADD_FRIEND
 		else if (action.equals(ACTION_ADD_FRIEND)) {
 			Log.w(TAG, "get ACTION_ADD_FRIEND !!");
+
+			HashMap<String, Object> item = new HashMap<String, Object>();
+			item.put("pic1", R.drawable.ic_launcher);
+			item.put(EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
+			item.put(EXTRA_GCMID, intent.getStringExtra(EXTRA_GCMID));
+			item.put(EXTRA_DATE, intent.getStringExtra(EXTRA_DATE));
+			
+			FileIO fio = new FileIO(context);
+			fio.addContact(item);
 
 			Log.d(TAG, intent.getStringExtra(EXTRA_DATE));
 			Log.d(TAG, intent.getStringExtra(EXTRA_GCMID));
@@ -80,6 +94,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			if (action.equals(ACTION_ADD_FRIEND)) {
 
 				intent.putExtra(EXTRA_ACTION, ACTION_ADD_FRIEND);
+				intent.putExtra(EXTRA_NAME, bundle.getString(EXTRA_NAME));
 				intent.putExtra(EXTRA_DATE, bundle.getString(EXTRA_DATE));
 				intent.putExtra(EXTRA_GCMID, bundle.getString(EXTRA_GCMID));
 			} else if (action.equals(ACTION_SEND_MESSAGE)) {
