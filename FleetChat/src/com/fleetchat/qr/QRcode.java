@@ -1,6 +1,7 @@
 package com.fleetchat.qr;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,8 +36,12 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
+import android.widget.Toast;
 
+import com.fleetchat.MainActivity;
 import com.fleetchat.R;
+import com.fleetchat.tools.FileIO;
+import com.fleetchat.util.GCMConstants;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
@@ -53,7 +58,7 @@ public class QRcode extends FragmentActivity {
 	}
 
 	public static class QRcodeFragment extends Fragment {
-		//tab UI
+		// tab UI
 		private ImageView ivQRgen, ivQRscan;
 		// UIs
 		private RadioGroup rg;
@@ -88,6 +93,10 @@ public class QRcode extends FragmentActivity {
 		private String chooseDate1, chooseDate2;
 		private String chooseTime2;
 
+		private String reg_id;
+		// TODO From user's registration
+		private String USER_NAME = "Username";
+
 		public QRcodeFragment() {
 		}
 
@@ -103,6 +112,7 @@ public class QRcode extends FragmentActivity {
 		}
 
 		private void init() {
+			reg_id = MainActivity.GCM.getRegistrationId();
 			initCalendar();
 			chooseDate1 = "Permenant Permission";
 			chooseDate2 = "No Limitation";
@@ -176,8 +186,9 @@ public class QRcode extends FragmentActivity {
 
 				@Override
 				public void onClick(View v) {
-					strToGen = "duration: " + chooseDate1 + " expiration: "
-							+ chooseDate2 + "-" + chooseTime2;
+					strToGen = "FleetChat" + "duration:" + chooseDate1
+							+ "expiration:" + chooseDate2 + "-" + chooseTime2
+							+ "" + "regID:" + reg_id + "UserName:" + USER_NAME;
 
 					int smallerDimension = width < height ? width : height;
 					smallerDimension = smallerDimension * 1 / 2;
@@ -272,7 +283,8 @@ public class QRcode extends FragmentActivity {
 		}
 	}
 
-	public static class QRcodeFragment2 extends Fragment {
+	public static class QRcodeFragment2 extends Fragment implements
+			GCMConstants {
 		// download package
 		private static final String PACKAGE = "com.google.zxing.client.android";
 
@@ -298,9 +310,9 @@ public class QRcode extends FragmentActivity {
 		private String chooseDate1, chooseDate2;
 		private String chooseTime2;
 
-		// User's reg_id
-		// TODO from other Activity
+		// Contact details
 		private String reg_id;
+		private FileIO fio;
 
 		public QRcodeFragment2() {
 		}
@@ -344,9 +356,43 @@ public class QRcode extends FragmentActivity {
 				if (resultCode == RESULT_OK) {
 					String contents = intent.getStringExtra("SCAN_RESULT");
 					String format = intent.getStringExtra("SCAN_RESULT_FORMAT");
-					// Handle successful scan
-					message = "Content: " + contents + "\nFormat: " + format;
+					if (format.equalsIgnoreCase("QR_CODE")
+							&& contents.split("duration:")[0]
+									.equalsIgnoreCase("FleetChat")) {
+						HashMap<String, Object> item = new HashMap<String, Object>();
+						item.put(
+								EXTRA_NAME,
+								contents.split("regID:")[1].split("UserName:")[1]);
+						item.put(
+								EXTRA_GCMID,
+								contents.split("regID:")[1].split("UserName:")[0]);
+						item.put(EXTRA_DATE, contents.split("duration:")[1]
+								.split("expiration")[0]);
+						fio = new FileIO(getActivity());
+						if (fio.addContact(item)) {
+							Toast t = Toast.makeText(getActivity(),
+									"Friend has been added successfully",
+									Toast.LENGTH_SHORT);
+							t.show();
+							message = "Content: " + contents + "\nFormat: "
+									+ format;
+						} else {
+							Toast t = Toast.makeText(getActivity(),
+									"You two are friends already!",
+									Toast.LENGTH_SHORT);
+							t.show();
+						}
 
+					} else {
+
+						message = null;
+						AlertDialog.Builder dialog = new AlertDialog.Builder(
+								getActivity());
+						dialog.setTitle("Warnig")
+								.setMessage(
+										"This format is wrong, please try to scan QRcode!")
+								.setPositiveButton("OK", null).show();
+					}
 				} else if (resultCode == RESULT_CANCELED) {
 					message = "Scan was Cancelled!";
 				}

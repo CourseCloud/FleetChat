@@ -122,16 +122,23 @@ public class FileIO implements FileIOConstants {
 	/** Contact **/
 	/**************************************************************************/
 
-	public void addContact(HashMap<String, Object> item) {
+	public Boolean addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
+		Log.i("path", _context.getFilesDir()+"");
 		ArrayList<HashMap<String, Object>> list;
-		if (getContact() == null) {
-			list = new ArrayList<HashMap<String, Object>>();
+		if (file.exists()) {
+			return false;
 		} else {
-			list = getContact();
+			if (getContact() == null) {
+				list = new ArrayList<HashMap<String, Object>>();
+			} else {
+				list = getContact();
+			}
+			list.add(item);
+			Boolean ifAddSuccess = writeObject(file, list);
+			return ifAddSuccess;
 		}
-		list.add(item);
-		writeObject(file, list);
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -190,15 +197,17 @@ public class FileIO implements FileIOConstants {
 	/** Private **/
 	/**************************************************************************/
 
-	private void writeObject(File file, Object object) {
+	private boolean writeObject(File file, Object object) {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(file);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(object);
 			oos.close();
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 

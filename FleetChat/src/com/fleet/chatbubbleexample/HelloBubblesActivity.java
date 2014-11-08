@@ -28,7 +28,7 @@ public class HelloBubblesActivity extends Activity {
 		random = new Random();
 		ipsum = new LoremIpsum();
 
-		lv = (ListView) findViewById(R.id.listView1);
+//		lv = (ListView) findViewById(R.id.listView1);
 
 		adapter = new DiscussArrayAdapter(getApplicationContext(),
 				R.layout.chat_activity_item_me);
