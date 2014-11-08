@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.fleetchat.util.FileIOConstants;
+
 import android.content.Context;
 import android.util.Log;
 
-public class FileIO {
-	private static final String CHAT_DIR = "chat";
-	private static final String CONTACT = "contact";
+public class FileIO implements FileIOConstants {
 
 	private static final String TAG = "FileIO";
 
@@ -68,7 +68,7 @@ public class FileIO {
 		return f.list();
 	}
 
-	public String getChatDetails(String filename) {
+	public String getChatDetailModifiedTime(String filename) {
 		File f = new File(getChatDir(), filename);
 		Date d = new Date(f.lastModified());
 		String time = TimeUtilities.getTimehhmm(d);
@@ -102,7 +102,7 @@ public class FileIO {
 		FileWriter fw;
 		try {
 			File f = new File(dir, filename);
-			if(!f.exists()){
+			if (!f.exists()) {
 				f.createNewFile();
 			}
 			fw = new FileWriter(f, true);
@@ -117,6 +117,10 @@ public class FileIO {
 		File file = new File(_context.getFilesDir(), CONTACT);
 		writeObject(file, list);
 	}
+
+	/**************************************************************************/
+	/** Contact **/
+	/**************************************************************************/
 
 	public void addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
@@ -133,6 +137,45 @@ public class FileIO {
 	@SuppressWarnings("unchecked")
 	public ArrayList<HashMap<String, Object>> getContact() {
 		File file = new File(_context.getFilesDir(), CONTACT);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return (ArrayList<HashMap<String, Object>>) readObject(file);
+	}
+
+	/**************************************************************************/
+	/** ChatDetail **/
+	/**************************************************************************/
+
+	public void addChatDetail(String filename, HashMap<String, Object> item) {
+		File file = new File(getChatDir(), filename);
+		ArrayList<HashMap<String, Object>> list;
+		if (getChatDetail(filename) == null) {
+			list = new ArrayList<HashMap<String, Object>>();
+		} else {
+			list = getChatDetail(filename);
+		}
+		if (!item.isEmpty()) {
+			list.add(item);
+		}
+		writeObject(file, list);
+	}
+
+	public void addChatDetail(String filename, String message) {
+		HashMap<String, Object> item = new HashMap<String, Object>();
+		item.put(MESSAGE, message);
+		item.put(TIME, TimeUtilities.getTimeyyyyMMddhhmmss());
+
+		addChatDetail(filename, item);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ArrayList<HashMap<String, Object>> getChatDetail(String filename) {
+		File file = new File(getChatDir(), filename);
 		if (!file.exists()) {
 			try {
 				file.createNewFile();

@@ -1,5 +1,6 @@
 package com.fleetchat.fragments;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,13 +35,14 @@ public class ContactFragment extends Fragment implements GCMConstants {
 	private ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 	private ListView listview;
 	private SimpleAdapter simpleAdapter;
+	private FileIO fio;
 
 	private void setListView() {
 
 		listview = (ListView) view
 				.findViewById(R.id.contact_fragment_listView1);
 
-		FileIO fio = new FileIO(getActivity());
+		fio = new FileIO(getActivity());
 		list = fio.getContact();
 		Log.d("DEBUG", "list = " + list);
 
@@ -50,6 +52,13 @@ public class ContactFragment extends Fragment implements GCMConstants {
 					int position, long id) {
 				Toast.makeText(getActivity(), "" + list.get(position),
 						Toast.LENGTH_SHORT).show();
+
+				File f = new File(fio.getChatDir(), (String) list.get(position)
+						.get(EXTRA_GCMID));
+				if (!f.exists()) {
+					fio.writeFileToChat(
+							(String) list.get(position).get(EXTRA_GCMID), "");
+				}
 
 				Intent intent = new Intent(getActivity(), ChatActivity.class);
 				Bundle b = new Bundle();
@@ -64,7 +73,7 @@ public class ContactFragment extends Fragment implements GCMConstants {
 
 			simpleAdapter = new SimpleAdapter(getActivity(), list,
 					R.layout.simple_list_item_3, new String[] { "pic1",
-				EXTRA_NAME, EXTRA_DATE }, // key的名字
+							EXTRA_NAME, EXTRA_DATE }, // key的名字
 					new int[] { R.id.simple_list_item_3_imageView1,
 							R.id.simple_list_item_3_textView1,
 							R.id.simple_list_item_3_textView2 });

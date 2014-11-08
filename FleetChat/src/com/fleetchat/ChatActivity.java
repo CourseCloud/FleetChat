@@ -15,9 +15,11 @@ import android.widget.EditText;
 
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.tools.StringUtilities;
+import com.fleetchat.util.FileIOConstants;
 import com.fleetchat.util.GCMConstants;
 
-public class ChatActivity extends Activity implements GCMConstants {
+public class ChatActivity extends Activity implements GCMConstants,
+		FileIOConstants {
 	// UI
 	private EditText _etContent;
 	private EditText _etMessage;
@@ -25,7 +27,7 @@ public class ChatActivity extends Activity implements GCMConstants {
 
 	// Class
 	private FileIO fio;
-	private String _contact;
+	private String _contact = "temp";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,27 +35,31 @@ public class ChatActivity extends Activity implements GCMConstants {
 		fio = new FileIO(getApplicationContext());
 
 		setContentView(R.layout.chat_activity);
-		InitializeActionBar();
+		Initialize();
 		setView();
 
 	}
 
-	// Initialize ActionBar
-	private void InitializeActionBar() {
+	private void Initialize() {
+		// Initialize ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowHomeEnabled(false);
 
+		// Get contact's GCM id.
 		_contact = getIntent().getStringExtra(EXTRA_GCMID);
+
+		// actionBar.setTitle()
 		ArrayList<HashMap<String, Object>> list = fio.getContact();
 		for (HashMap<String, Object> item : list) {
-
-			Log.d("DEBUG","count");
 			if (item.get(EXTRA_GCMID).equals(_contact)) {
-				Log.d("DEBUG","in");
 				actionBar.setTitle((CharSequence) item.get(EXTRA_NAME));
 				break;
 			}
 		}
+		
+		// Create File
+		fio.addChatDetail(_contact, new HashMap<String, Object>());
+
 	}
 
 	private void setView() {
@@ -84,29 +90,35 @@ public class ChatActivity extends Activity implements GCMConstants {
 		// Button
 		_btnSend.setOnClickListener(new Button.OnClickListener() {
 
-			//	TODO file IO problem , crash!!!!!!!!
 			@Override
 			public void onClick(View v) {
-				fio.writeFileToChat(_contact, _etMessage.getText().toString()
-						+ "\n");
+				fio.addChatDetail(_contact, _etMessage.getText().toString());
 
 				_etMessage.setText("");
-				_etContent.setText(fio.getChatContent(_contact));
-				// _etContent.setSelection(_etContent.getSelectionEnd());
-				_etContent.setSelection(_etContent.getSelectionStart());
+
+				setContent();
 			}
 		});
 
-		try {
-			_etContent.setText(fio.getChatContent(_contact));
-		} catch (Exception e) {
-			Log.d("DEBUG", e.toString());
-		}
+		setContent();
 
 	}
 
-	private void set() {
+	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 
+	private void setContent() {
+
+		list = fio.getChatDetail(_contact);
+		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
+
+		String s = "";
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				s = s + list.get(i).get(MESSAGE) + "\n";
+			}
+		}
+
+		_etContent.setText(s);
 	}
 
 }

@@ -103,7 +103,7 @@ public class ChatListFragment extends Fragment {
 			item.put(IMAGE, R.drawable.head);
 			item.put(NAME, chatList[i]);
 			item.put(CONTENT, "CONTENTddddddddddddd");
-			item.put(TIME, fio.getChatDetails(chatList[i]));
+			item.put(TIME, fio.getChatDetailModifiedTime(chatList[i]));
 			list.add(item);
 		}
 
