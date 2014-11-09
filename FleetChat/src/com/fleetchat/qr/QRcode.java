@@ -5,8 +5,6 @@ import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -388,7 +386,7 @@ public class QRcode extends FragmentActivity {
 						message = null;
 						AlertDialog.Builder dialog = new AlertDialog.Builder(
 								getActivity());
-						dialog.setTitle("Warnig")
+						dialog.setTitle("Warning")
 								.setMessage(
 										"This format is wrong, please try to scan QRcode!")
 								.setPositiveButton("OK", null).show();

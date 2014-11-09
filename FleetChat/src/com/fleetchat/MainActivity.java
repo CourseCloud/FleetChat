@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.ChatListFragment;
 import com.fleetchat.fragments.DemoFragment;
+import com.fleetchat.fragments.NFCTabFragment;
 import com.fleetchat.fragments.QRTabFragment;
 import com.fleetchat.tools.GCMUtilities;
 
@@ -55,6 +56,9 @@ public class MainActivity extends FragmentActivity {
 				case 3:
 					fragment = new QRTabFragment();
 					break;
+				case 4:
+					fragment = new NFCTabFragment();
+					break;
 				}
 
 				try {
@@ -88,7 +92,7 @@ public class MainActivity extends FragmentActivity {
 		};
 
 		// Add 3 tabs, specifying the tab's text and TabListener
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 5; i++) {
 			Tab tab = actionBar.newTab().setText("Tab " + (i + 1))
 					.setTabListener(tabListener)
 					.setIcon(R.drawable.ic_launcher);

@@ -2,6 +2,7 @@ package com.fleetchat.fragments;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -39,10 +40,12 @@ import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
+import com.fleetchat.MainActivity;
+import com.fleetchat.util.GCMConstants;
 import com.fleetchat.R;
-import com.fleetchat.qr.NFCPush.NFCFragment;
+import com.fleetchat.tools.FileIO;
 
-public class NFCTabFragment extends Fragment{
+public class NFCTabFragment extends Fragment implements GCMConstants {
 	private View rootView;
 	// nfc params
 	private Button btnStart;
@@ -60,7 +63,7 @@ public class NFCTabFragment extends Fragment{
 	private TimePicker tp;
 	// Strings to deliver
 	private String chooseDate1, chooseDate2, chooseTime2;
-	private String strToGen;
+	private String strToGen = "";
 	// datePicker params
 	private Calendar cal;
 	private int year;
@@ -73,9 +76,11 @@ public class NFCTabFragment extends Fragment{
 	IntentFilter[] mWriteTagFilters;
 	IntentFilter[] mNdefExchangeFilters;
 
-	// User's reg_id
-	// TODO from other Activity
 	private String reg_id;
+	// TODO From user's registration
+	private String USER_NAME = "Username";
+	private String strFromDevice;
+	private FileIO fio;
 
 	public NFCTabFragment() {
 	}
@@ -83,8 +88,7 @@ public class NFCTabFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater
-				.inflate(R.layout.nfc_fragment, container, false);
+		rootView = inflater.inflate(R.layout.nfc_fragment, container, false);
 		init();
 		initNFC();
 		return rootView;
@@ -93,8 +97,6 @@ public class NFCTabFragment extends Fragment{
 	private void initNFC() {
 		// TODO Auto-generated method stub
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
-
-		mNote.addTextChangedListener(mTextWatcher);
 
 		// Handle all of our received NFC intents in this activity.
 		mNfcPendingIntent = PendingIntent.getActivity(getActivity(), 0,
@@ -118,19 +120,18 @@ public class NFCTabFragment extends Fragment{
 	}
 
 	private void init() {
+		reg_id = MainActivity.GCM.getRegistrationId();
 		initCalendar();
 		chooseDate1 = "Permenant Permission";
 		chooseDate2 = "No Limitation";
 		chooseTime2 = "";
-		ch1 = (CheckBox) rootView
-				.findViewById(R.id.qrcode_fragment_checkBox1);
+		ch1 = (CheckBox) rootView.findViewById(R.id.nfcpush_fragment_checkBox1);
 		ch1.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/"
-						+ day;
+				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
 				chooseTime2 = "" + " " + hour + ":" + minute;
 				if (ch1.isChecked()) {
 					dp2.setVisibility(View.VISIBLE);
@@ -145,16 +146,13 @@ public class NFCTabFragment extends Fragment{
 		});
 		rg = (RadioGroup) rootView
 				.findViewById(R.id.nfcpush_fragment_radioGroup1);
-		rb1 = (RadioButton) rootView
-				.findViewById(R.id.nfcpush_fragment_radio0);
-		rb2 = (RadioButton) rootView
-				.findViewById(R.id.nfcpush_fragment_radio1);
+		rb1 = (RadioButton) rootView.findViewById(R.id.nfcpush_fragment_radio0);
+		rb2 = (RadioButton) rootView.findViewById(R.id.nfcpush_fragment_radio1);
 		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/"
-						+ day;
+				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/" + day;
 				if (rb1.isChecked()) {
 					chooseDate1 = "permenant permission";
 
@@ -178,8 +176,7 @@ public class NFCTabFragment extends Fragment{
 		tp.setOnTimeChangedListener(new OnTimeChangedListener() {
 
 			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay,
-					int minute) {
+			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
 				NFCTabFragment.this.hour = hourOfDay;
 				NFCTabFragment.this.minute = minute;
 				chooseTime2 = "" + " " + hour + ":" + minute;
@@ -192,16 +189,19 @@ public class NFCTabFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				disableNdefExchangeMode();
-				enableTagWriteMode();
+				strToGen = "FleetChat" + "duration:" + chooseDate1
+						+ "expiration:" + chooseDate2 + "-" + chooseTime2 + ""
+						+ "regID:" + reg_id + "UserName:" + USER_NAME;
+				enableNdefExchangeMode();
+				disableTagWriteMode();
 
 				new AlertDialog.Builder(getActivity())
-						.setTitle("Touch tag to write")
+						.setTitle("Waiting...")
+						.setMessage("Wait for exchange device")
 						.setOnCancelListener(
 								new DialogInterface.OnCancelListener() {
 									@Override
-									public void onCancel(
-											DialogInterface dialog) {
+									public void onCancel(DialogInterface dialog) {
 										disableTagWriteMode();
 										enableNdefExchangeMode();
 									}
@@ -213,18 +213,15 @@ public class NFCTabFragment extends Fragment{
 	protected void onNewIntent(Intent intent) {
 		// NDEF exchange mode
 		if (!mWriteMode
-				&& NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent
-						.getAction())) {
+				&& NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
 			NdefMessage[] msgs = getNdefMessages(intent);
 			promptForContent(msgs[0]);
 		}
 
 		// Tag writing mode
 		if (mWriteMode
-				&& NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent
-						.getAction())) {
-			Tag detectedTag = intent
-					.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+				&& NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+			Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			writeTag(getNoteAsNdef(), detectedTag);
 		}
 	}
@@ -238,8 +235,8 @@ public class NFCTabFragment extends Fragment{
 		}
 
 		@Override
-		public void beforeTextChanged(CharSequence arg0, int arg1,
-				int arg2, int arg3) {
+		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+				int arg3) {
 
 		}
 
@@ -254,36 +251,39 @@ public class NFCTabFragment extends Fragment{
 	};
 
 	private void promptForContent(final NdefMessage msg) {
-		new AlertDialog.Builder(getActivity())
-				.setTitle("Replace current content?")
-				.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface arg0,
-									int arg1) {
-								String body = new String(
-										msg.getRecords()[0].getPayload());
-								setNoteBody(body);
-							}
-						})
-				.setNegativeButton("No",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface arg0,
-									int arg1) {
+		strFromDevice = new String(msg.getRecords()[0].getPayload());
+		Log.i("strToSend", strFromDevice);
+		if (strFromDevice.split("duration:")[0].equalsIgnoreCase("FleetChat")) {
+			HashMap<String, Object> item = new HashMap<String, Object>();
+			item.put(EXTRA_NAME,
+					strFromDevice.split("regID:")[1].split("UserName:")[1]);
+			item.put(EXTRA_GCMID,
+					strFromDevice.split("regID:")[1].split("UserName:")[0]);
+			item.put(EXTRA_DATE,
+					strFromDevice.split("duration:")[1].split("expiration")[0]);
+			fio = new FileIO(getActivity());
+			if (fio.addContact(item)) {
+				Toast t = Toast.makeText(getActivity(),
+						"Friend has been added successfully",
+						Toast.LENGTH_SHORT);
+				t.show();
+			} else {
+				Toast t = Toast.makeText(getActivity(),
+						"You two are friends already!", Toast.LENGTH_SHORT);
+				t.show();
+			}
 
-							}
-						}).show();
-	}
+		} else {
 
-	private void setNoteBody(String body) {
-		Editable text = mNote.getText();
-		text.clear();
-		text.append(body);
+			strFromDevice = null;
+			AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+			dialog.setTitle("Warning").setMessage("No string is detected!")
+					.setPositiveButton("OK", null).show();
+		}
 	}
 
 	private NdefMessage getNoteAsNdef() {
-		byte[] textBytes = mNote.getText().toString().getBytes();
+		byte[] textBytes = strToGen.getBytes();
 		NdefRecord textRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
 				"text/plain".getBytes(), new byte[] {}, textBytes);
 		return new NdefMessage(new NdefRecord[] { textRecord });
@@ -293,12 +293,10 @@ public class NFCTabFragment extends Fragment{
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getActivity()
-				.getIntent().getAction())) {
-			NdefMessage[] messages = getNdefMessages(getActivity()
-					.getIntent());
+		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getActivity().getIntent()
+				.getAction())) {
+			NdefMessage[] messages = getNdefMessages(getActivity().getIntent());
 			byte[] payload = messages[0].getRecords()[0].getPayload();
-			setNoteBody(new String(payload));
 			getActivity().setIntent(new Intent()); // Consume this intent.
 		}
 		enableNdefExchangeMode();
@@ -323,8 +321,7 @@ public class NFCTabFragment extends Fragment{
 				byte[] empty = new byte[] {};
 				NdefRecord record = new NdefRecord(NdefRecord.TNF_UNKNOWN,
 						empty, empty, empty);
-				NdefMessage msg = new NdefMessage(
-						new NdefRecord[] { record });
+				NdefMessage msg = new NdefMessage(new NdefRecord[] { record });
 				msgs = new NdefMessage[] { msg };
 			}
 		} else {
@@ -335,10 +332,9 @@ public class NFCTabFragment extends Fragment{
 
 	@SuppressWarnings("deprecation")
 	private void enableNdefExchangeMode() {
-		mNfcAdapter
-				.enableForegroundNdefPush(getActivity(), getNoteAsNdef());
-		mNfcAdapter.enableForegroundDispatch(getActivity(),
-				mNfcPendingIntent, mNdefExchangeFilters, null);
+		mNfcAdapter.enableForegroundNdefPush(getActivity(), getNoteAsNdef());
+		mNfcAdapter.enableForegroundDispatch(getActivity(), mNfcPendingIntent,
+				mNdefExchangeFilters, null);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -352,8 +348,8 @@ public class NFCTabFragment extends Fragment{
 		IntentFilter tagDetected = new IntentFilter(
 				NfcAdapter.ACTION_TAG_DISCOVERED);
 		mWriteTagFilters = new IntentFilter[] { tagDetected };
-		mNfcAdapter.enableForegroundDispatch(getActivity(),
-				mNfcPendingIntent, mWriteTagFilters, null);
+		mNfcAdapter.enableForegroundDispatch(getActivity(), mNfcPendingIntent,
+				mWriteTagFilters, null);
 	}
 
 	private void disableTagWriteMode() {
@@ -416,8 +412,7 @@ public class NFCTabFragment extends Fragment{
 				NFCTabFragment.this.year = year;
 				NFCTabFragment.this.month = month;
 				NFCTabFragment.this.day = day;
-				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/"
-						+ day;
+				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/" + day;
 				Log.i("Date1", chooseDate1);
 			}
 		});
@@ -434,8 +429,7 @@ public class NFCTabFragment extends Fragment{
 				NFCTabFragment.this.year = year;
 				NFCTabFragment.this.month = month;
 				NFCTabFragment.this.day = day;
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/"
-						+ day;
+				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
 			}
 		});
 	}

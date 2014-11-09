@@ -127,6 +127,7 @@ public class FileIO implements FileIOConstants {
 		Log.i("path", _context.getFilesDir()+"");
 		ArrayList<HashMap<String, Object>> list;
 		if (file.exists()) {
+			file.delete();
 			return false;
 		} else {
 			if (getContact() == null) {
