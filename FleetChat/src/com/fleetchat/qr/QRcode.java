@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.fleetchat.tools.FileIO;
+import com.fleetchat.tools.TimeUtilities;
 import com.fleetchat.util.GCMConstants;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -373,12 +374,17 @@ public class QRcode extends FragmentActivity {
 						item.put(EXTRA_NAME, name);
 						item.put(EXTRA_GCMID, gcmidFromOther);
 						item.put(EXTRA_DATE, during);
+
+						// TODO (Ho) Need Add GCM function.
+						// getRegistrationId change to someone's id.
+						// getTimeyyyyMMddhhmmss change to qrDeadlineTime 
+						MainActivity.GCM.postDataAddFriend(
+								MainActivity.GCM.getRegistrationId(),
+								TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
 						
 						fio = new FileIO(getActivity());
 						if (fio.addContact(item)) {
 							fio.addContact(item);
-							MainActivity.GCM.postDataAddFriend(regIds, during,
-									reg_id);
 							Toast t = Toast.makeText(getActivity(),
 									"Friend has been added successfully",
 									Toast.LENGTH_SHORT);
