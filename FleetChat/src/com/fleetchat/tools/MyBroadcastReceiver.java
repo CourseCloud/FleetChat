@@ -58,7 +58,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			item.put(EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
 			item.put(EXTRA_GCMID, intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_DATE, intent.getStringExtra(EXTRA_DATE));
-			
+
 			FileIO fio = new FileIO(context);
 			fio.addContact(item);
 
@@ -97,6 +97,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 				intent.putExtra(EXTRA_NAME, bundle.getString(EXTRA_NAME));
 				intent.putExtra(EXTRA_DATE, bundle.getString(EXTRA_DATE));
 				intent.putExtra(EXTRA_GCMID, bundle.getString(EXTRA_GCMID));
+				intent.putExtra(EXTRA_QR_DEADLINE_TIME,
+						bundle.getString(EXTRA_QR_DEADLINE_TIME));
 			} else if (action.equals(ACTION_SEND_MESSAGE)) {
 
 				intent.putExtra(EXTRA_ACTION, ACTION_SEND_MESSAGE);

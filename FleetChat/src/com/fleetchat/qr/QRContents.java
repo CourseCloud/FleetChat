@@ -1,8 +1,8 @@
 package com.fleetchat.qr;
 import android.provider.ContactsContract;
  
-public final class Contents {
-    private Contents() {
+public final class QRContents {
+    private QRContents() {
     }
  
     public static final class Type {

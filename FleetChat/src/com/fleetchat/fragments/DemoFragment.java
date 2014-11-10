@@ -143,18 +143,21 @@ public class DemoFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				List<String> regIds = new ArrayList<String>();
-
 				Log.w(TAG, "onClick");
 				Log.w(TAG, MainActivity.GCM.getRegistrationId());
-				
-				// TODO change to someone's gcmid
-				regIds.add(MainActivity.GCM.getRegistrationId());
-				// regIds.add(CommonUtilities.tempID2);
-				
-				MainActivity.GCM.postDataAddFriend(regIds,
-						TimeUtilities.getTimeyyyyMMddhhmmss(),
-						MainActivity.GCM.getRegistrationId());
+
+				// List<String> regIds = new ArrayList<String>();
+				// // change to someone's gcmid
+				// regIds.add(MainActivity.GCM.getRegistrationId());
+				//
+				//
+				// MainActivity.GCM.postDataAddFriends(regIds,
+				// TimeUtilities.getTimeyyyyMMddhhmmss(),
+				// MainActivity.GCM.getRegistrationId());
+
+				MainActivity.GCM.postDataAddFriend(
+						MainActivity.GCM.getRegistrationId(),
+						TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
 
 			}
 		});

@@ -2,6 +2,8 @@ package com.fleetchat;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,16 +12,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.ChatListFragment;
+import com.fleetchat.fragments.ContactFragment;
 import com.fleetchat.fragments.DemoFragment;
 import com.fleetchat.fragments.NFCTabFragment;
 import com.fleetchat.fragments.QRTabFragment;
+import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.GCMUtilities;
 
 public class MainActivity extends FragmentActivity {
 
 	protected static final String TAG = "MainActivity";
+	public static final String PREF = "PREF";
+	public static final String PREF_NAME = "PREF_NAME";
 	public static GCMUtilities GCM;
 
 	@Override
@@ -49,7 +54,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case 1:
 					fragment = new ChatListFragment();
-					break; 
+					break;
 				case 2:
 					fragment = new DemoFragment();
 					break;
@@ -57,6 +62,7 @@ public class MainActivity extends FragmentActivity {
 					fragment = new QRTabFragment();
 					break;
 				case 4:
+					// TODO (Ho,Xu) Need to invisiable it, if phone no NFC.
 					fragment = new NFCTabFragment();
 					break;
 				}
@@ -114,14 +120,22 @@ public class MainActivity extends FragmentActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			adm.showEnterNameDialog(MainActivity.this);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	AlertDialogManager adm = new AlertDialogManager();
+
 	@Override
 	public void onResume() {
 		GCM.onResume();
+
+		if (getSharedPreferences(PREF, Context.MODE_PRIVATE).getString(
+				PREF_NAME, "").equals("")) {
+			adm.showEnterNameDialog(MainActivity.this);
+		}
 		super.onResume();
 	}
 

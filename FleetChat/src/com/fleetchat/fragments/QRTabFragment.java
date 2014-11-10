@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fleetchat.R;
+import com.fleetchat.qr.QRGeneratorFragment;
+import com.fleetchat.qr.QRScannerFragment;
 import com.fleetchat.qr.QRcode;
 
 public class QRTabFragment extends Fragment {
@@ -35,11 +37,15 @@ public class QRTabFragment extends Fragment {
 
 			switch (v.getId()) {
 			case R.id.qr_tab_fragment_iv1:
-				changeFragment(new QRcode.QRcodeFragment());
+				//TODO (Xu) change fragments
+//				changeFragment(new QRcode.QRcodeFragment());
+				changeFragment(new QRGeneratorFragment());
 
 				break;
 			case R.id.qr_tab_fragment_iv2:
-				changeFragment(new QRcode.QRcodeFragment2());
+//				changeFragment(new QRcode.QRcodeFragment2());
+				//TODO (Xu) change fragments
+				changeFragment(new QRScannerFragment());
 
 				break;
 

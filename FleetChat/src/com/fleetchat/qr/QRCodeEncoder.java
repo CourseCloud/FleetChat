@@ -65,34 +65,34 @@ public final class QRCodeEncoder {
     }
  
     private void encodeQRCodeContents(String data, Bundle bundle, String type) {
-        if (type.equals(Contents.Type.TEXT)) {
+        if (type.equals(QRContents.Type.TEXT)) {
             if (data != null && data.length() > 0) {
                 contents = data;
                 displayContents = data;
                 title = "Text";
             }
-        } else if (type.equals(Contents.Type.EMAIL)) {
+        } else if (type.equals(QRContents.Type.EMAIL)) {
             data = trim(data);
             if (data != null) {
                 contents = "mailto:" + data;
                 displayContents = data;
                 title = "E-Mail";
             }
-        } else if (type.equals(Contents.Type.PHONE)) {
+        } else if (type.equals(QRContents.Type.PHONE)) {
             data = trim(data);
             if (data != null) {
                 contents = "tel:" + data;
                 displayContents = PhoneNumberUtils.formatNumber(data);
                 title = "Phone";
             }
-        } else if (type.equals(Contents.Type.SMS)) {
+        } else if (type.equals(QRContents.Type.SMS)) {
             data = trim(data);
             if (data != null) {
                 contents = "sms:" + data;
                 displayContents = PhoneNumberUtils.formatNumber(data);
                 title = "SMS";
             }
-        } else if (type.equals(Contents.Type.CONTACT)) {
+        } else if (type.equals(QRContents.Type.CONTACT)) {
             if (bundle != null) {
                 StringBuilder newContents = new StringBuilder(100);
                 StringBuilder newDisplayContents = new StringBuilder(100);
@@ -111,9 +111,9 @@ public final class QRCodeEncoder {
                     newDisplayContents.append('\n').append(address);
                 }
  
-                Collection<String> uniquePhones = new HashSet<String>(Contents.PHONE_KEYS.length);
-                for (int x = 0; x < Contents.PHONE_KEYS.length; x++) {
-                    String phone = trim(bundle.getString(Contents.PHONE_KEYS[x]));
+                Collection<String> uniquePhones = new HashSet<String>(QRContents.PHONE_KEYS.length);
+                for (int x = 0; x < QRContents.PHONE_KEYS.length; x++) {
+                    String phone = trim(bundle.getString(QRContents.PHONE_KEYS[x]));
                     if (phone != null) {
                         uniquePhones.add(phone);
                     }
@@ -123,9 +123,9 @@ public final class QRCodeEncoder {
                     newDisplayContents.append('\n').append(PhoneNumberUtils.formatNumber(phone));
                 }
  
-                Collection<String> uniqueEmails = new HashSet<String>(Contents.EMAIL_KEYS.length);
-                for (int x = 0; x < Contents.EMAIL_KEYS.length; x++) {
-                    String email = trim(bundle.getString(Contents.EMAIL_KEYS[x]));
+                Collection<String> uniqueEmails = new HashSet<String>(QRContents.EMAIL_KEYS.length);
+                for (int x = 0; x < QRContents.EMAIL_KEYS.length; x++) {
+                    String email = trim(bundle.getString(QRContents.EMAIL_KEYS[x]));
                     if (email != null) {
                         uniqueEmails.add(email);
                     }
@@ -135,14 +135,14 @@ public final class QRCodeEncoder {
                     newDisplayContents.append('\n').append(email);
                 }
  
-                String url = trim(bundle.getString(Contents.URL_KEY));
+                String url = trim(bundle.getString(QRContents.URL_KEY));
                 if (url != null) {
                     // escapeMECARD(url) -> wrong escape e.g. http\://zxing.google.com
                     newContents.append("URL:").append(url).append(';');
                     newDisplayContents.append('\n').append(url);
                 }
  
-                String note = trim(bundle.getString(Contents.NOTE_KEY));
+                String note = trim(bundle.getString(QRContents.NOTE_KEY));
                 if (note != null) {
                     newContents.append("NOTE:").append(escapeMECARD(note)).append(';');
                     newDisplayContents.append('\n').append(note);
@@ -160,7 +160,7 @@ public final class QRCodeEncoder {
                 }
  
             }
-        } else if (type.equals(Contents.Type.LOCATION)) {
+        } else if (type.equals(QRContents.Type.LOCATION)) {
             if (bundle != null) {
                 // These must use Bundle.getFloat(), not getDouble(), it's part of the API.
                 float latitude = bundle.getFloat("LAT", Float.MAX_VALUE);

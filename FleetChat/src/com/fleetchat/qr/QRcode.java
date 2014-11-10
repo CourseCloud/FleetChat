@@ -44,6 +44,7 @@ import com.fleetchat.util.GCMConstants;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
+//TODO (Ho) Need to delete it.
 public class QRcode extends FragmentActivity {
 
 	@Override
@@ -195,7 +196,7 @@ public class QRcode extends FragmentActivity {
 
 					// Encode with a QR Code image
 					QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(strToGen,
-							null, Contents.Type.TEXT, BarcodeFormat.QR_CODE
+							null, QRContents.Type.TEXT, BarcodeFormat.QR_CODE
 									.toString(), smallerDimension);
 					try {
 						Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();

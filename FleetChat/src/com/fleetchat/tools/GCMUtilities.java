@@ -1,6 +1,7 @@
 package com.fleetchat.tools;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.fleetchat.GCMIntentService;
+import com.fleetchat.MainActivity;
 import com.fleetchat.util.GCMConstants;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gcm.server.Message;
@@ -46,8 +48,8 @@ public class GCMUtilities implements GCMConstants {
 		}
 	}
 
-	public void postDataSendMessage(final List<String> regIds, final String title,
-			final String message) {
+	public void postDataSendMessage(final List<String> regIds,
+			final String title, final String message) {
 		final Sender sender = new Sender(CommonUtilities.GOOGLE_API_KEY);
 
 		new Thread(new Runnable() {
@@ -74,11 +76,9 @@ public class GCMUtilities implements GCMConstants {
 			}
 		}).start();
 	}
-	
 
-
-	public void postDataAddFriend(final List<String> regIds, final String date,
-			final String gcmid) {
+	public void postDataAddFriends(final List<String> friendRegIDs,
+			final String qrDeadlineTime, final String myName) {
 		final Sender sender = new Sender(CommonUtilities.GOOGLE_API_KEY);
 
 		new Thread(new Runnable() {
@@ -86,15 +86,17 @@ public class GCMUtilities implements GCMConstants {
 			@Override
 			public void run() {
 				try {
-					if (regIds.size() > 0) {
+					if (friendRegIDs.size() > 0) {
 						Message.Builder msg = new Message.Builder();
 						msg.addData(EXTRA_ACTION, ACTION_ADD_FRIEND);
-						msg.addData(EXTRA_NAME, "Annoymous");
-						msg.addData(EXTRA_DATE, date);
-						msg.addData(EXTRA_GCMID, gcmid);
+						msg.addData(EXTRA_NAME, myName);
+						msg.addData(EXTRA_DATE,
+								TimeUtilities.getTimeyyyyMMddhhmmss());
+						msg.addData(EXTRA_GCMID, getRegistrationId());
+						msg.addData(EXTRA_QR_DEADLINE_TIME, qrDeadlineTime);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
-								regIds);
+								friendRegIDs);
 						Log.e(TAG, MR.toString());
 					}
 				} catch (IOException e) {
@@ -103,6 +105,25 @@ public class GCMUtilities implements GCMConstants {
 
 			}
 		}).start();
+	}
+
+	/**
+	 * Sample : MainActivity.GCM.postDataAddFriend(
+	 * MainActivity.GCM.getRegistrationId(),
+	 * TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
+	 * 
+	 * @param friendRegID
+	 *            someone's gcmID who you want send message to.
+	 * @param qrDeadlineTime
+	 *            TimeUtilities.getTimeyyyyMMddhhmmss(), or what you want.
+	 * @param myName
+	 *            userName , nickName
+	 */
+	public void postDataAddFriend(String friendRegID, String qrDeadlineTime,
+			String myName) {
+		List<String> regIds = new ArrayList<String>();
+		regIds.add(friendRegID);
+		postDataAddFriends(regIds, qrDeadlineTime, myName);
 	}
 
 	/**

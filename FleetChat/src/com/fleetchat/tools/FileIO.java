@@ -28,10 +28,15 @@ public class FileIO implements FileIOConstants {
 
 	public FileIO(Context context) {
 		_context = context;
+
 	}
 
+	/**************************************************************************/
+	/** Dir **/
+	/**************************************************************************/
+	
 	/**
-	 * Get chat folder's diraction.
+	 * Get chat folder's direction.
 	 * 
 	 * @return /data/data/com.fleetchat/files/chat
 	 */
@@ -56,8 +61,6 @@ public class FileIO implements FileIOConstants {
 
 	/**
 	 * Get List of FileDir: /data/data/com.fleetchat/files/chat
-	 * 
-	 * @return
 	 */
 	public String[] getChatDirList() {
 		Log.i(TAG, "getChatDirList");
@@ -67,6 +70,11 @@ public class FileIO implements FileIOConstants {
 		}
 		return f.list();
 	}
+	
+
+	/**************************************************************************/
+	/** Chat **/
+	/**************************************************************************/
 
 	public String getChatDetailModifiedTime(String filename) {
 		File f = new File(getChatDir(), filename);
@@ -113,14 +121,13 @@ public class FileIO implements FileIOConstants {
 		}
 	}
 
-
 	/**************************************************************************/
 	/** Contact **/
 	/**************************************************************************/
 
 	public Boolean addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
-		Log.i("path", _context.getFilesDir()+"");
+		Log.i("path", _context.getFilesDir() + "");
 		ArrayList<HashMap<String, Object>> list;
 		if (file.exists()) {
 			file.delete();

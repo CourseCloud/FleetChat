@@ -20,6 +20,7 @@ import com.fleetchat.util.GCMConstants;
 
 public class ChatActivity extends Activity implements GCMConstants,
 		FileIOConstants {
+	private static final String TAG = "ChatActivity";
 	// UI
 	private EditText _etContent;
 	private EditText _etMessage;
@@ -45,21 +46,25 @@ public class ChatActivity extends Activity implements GCMConstants,
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowHomeEnabled(false);
 
-		// Get contact's GCM id.
-		_contact = getIntent().getStringExtra(EXTRA_GCMID);
+		try {
+			// Get contact's GCM id.
+			_contact = getIntent().getStringExtra(EXTRA_GCMID);
 
-		// actionBar.setTitle()
-		ArrayList<HashMap<String, Object>> list = fio.getContact();
-		for (HashMap<String, Object> item : list) {
-			if (item.get(EXTRA_GCMID).equals(_contact)) {
-				actionBar.setTitle((CharSequence) item.get(EXTRA_NAME));
-				break;
+			// actionBar.setTitle()
+			ArrayList<HashMap<String, Object>> list = fio.getContact();
+			for (HashMap<String, Object> item : list) {
+				if (item.get(EXTRA_GCMID).equals(_contact)) {
+					actionBar.setTitle((CharSequence) item.get(EXTRA_NAME));
+					break;
+				}
 			}
+
+			// Create File
+			fio.addChatDetail(_contact, new HashMap<String, Object>());
+
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
 		}
-
-		// Create File
-		fio.addChatDetail(_contact, new HashMap<String, Object>());
-
 	}
 
 	private void setView() {
@@ -110,6 +115,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private void setContent() {
 
 		list = fio.getChatDetail(_contact);
+		//	TODO "DEBUG"
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
 
 		String s = "";
