@@ -22,6 +22,7 @@ import com.fleetchat.ChatActivity;
 import com.fleetchat.R;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.tools.TimeUtilities;
+import com.fleetchat.util.GCMConstants;
 
 public class ChatListFragment extends Fragment {
 	protected static final String TAG = "Fragment2";
@@ -85,7 +86,7 @@ public class ChatListFragment extends Fragment {
 
 				Intent intent = new Intent(getActivity(), ChatActivity.class);
 				Bundle b = new Bundle();
-				b.putString(CHAT_TITLE, chatList[position]);
+				b.putString(GCMConstants.EXTRA_GCMID, chatList[position]);
 				intent.putExtras(b);
 				startActivity(intent);
 			}
