@@ -1,5 +1,6 @@
 package com.fleetchat.qr;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -91,6 +92,7 @@ public class QRcode extends FragmentActivity {
 		private String chooseDate1, chooseDate2;
 		private String chooseTime2;
 
+		// reg_id of the local device
 		private String reg_id;
 		// TODO From user's registration
 		private String USER_NAME = "Username";
@@ -328,6 +330,7 @@ public class QRcode extends FragmentActivity {
 		private Button btScan;
 
 		private void init() {
+			reg_id = MainActivity.GCM.getRegistrationId();
 			tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
 			btScan = (Button) rootView.findViewById(R.id.qrcode_fragment2_Scan);
 			btScan.setOnClickListener(new OnClickListener() {
@@ -358,16 +361,23 @@ public class QRcode extends FragmentActivity {
 							&& contents.split("duration:")[0]
 									.equalsIgnoreCase("FleetChat")) {
 						HashMap<String, Object> item = new HashMap<String, Object>();
-						item.put(
-								EXTRA_NAME,
-								contents.split("regID:")[1].split("UserName:")[1]);
-						item.put(
-								EXTRA_GCMID,
-								contents.split("regID:")[1].split("UserName:")[0]);
-						item.put(EXTRA_DATE, contents.split("duration:")[1]
-								.split("expiration")[0]);
+						ArrayList<String> regIds = new ArrayList<String>();
+						String name = contents.split("regID:")[1]
+								.split("UserName:")[1];
+						String gcmidFromOther = contents.split("regID:")[1]
+								.split("UserName:")[0];
+						String during = contents.split("duration:")[1]
+								.split("expiration")[0];
+						regIds.add(gcmidFromOther);
+						item.put(EXTRA_NAME, name);
+						item.put(EXTRA_GCMID, gcmidFromOther);
+						item.put(EXTRA_DATE, during);
+						
 						fio = new FileIO(getActivity());
 						if (fio.addContact(item)) {
+							fio.addContact(item);
+							MainActivity.GCM.postDataAddFriend(regIds, during,
+									reg_id);
 							Toast t = Toast.makeText(getActivity(),
 									"Friend has been added successfully",
 									Toast.LENGTH_SHORT);

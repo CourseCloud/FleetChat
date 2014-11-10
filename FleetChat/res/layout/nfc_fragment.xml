@@ -83,27 +83,6 @@
                 android:spinnersShown="true"
                 android:startYear="2014" />
 
-            <CheckBox
-                android:id="@+id/nfcpush_fragment_checkBox1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nfcpush_fragment_ch1" />
-
-            <DatePicker
-                android:id="@+id/nfcpush_fragment_datePicker2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:calendarViewShown="false"
-                android:endYear="2030"
-                android:spinnersShown="true"
-                android:startYear="2014" />
-
-            <TimePicker
-                android:id="@+id/nfcpush_fragment_timePicker1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <Button
                 android:id="@+id/nfcpush_fragment_button1"
                 android:layout_width="match_parent"

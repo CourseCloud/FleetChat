@@ -28,22 +28,18 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 import com.fleetchat.MainActivity;
-import com.fleetchat.util.GCMConstants;
 import com.fleetchat.R;
 import com.fleetchat.tools.FileIO;
+import com.fleetchat.util.GCMConstants;
 
 public class NFCTabFragment extends Fragment implements GCMConstants {
 	private View rootView;
@@ -58,11 +54,9 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	// basic UIs
 	private RadioGroup rg;
 	private RadioButton rb1, rb2;
-	private CheckBox ch1;
-	private DatePicker dp1, dp2;
-	private TimePicker tp;
+	private DatePicker dp1;
 	// Strings to deliver
-	private String chooseDate1, chooseDate2, chooseTime2;
+	private String chooseDate1;
 	private String strToGen = "";
 	// datePicker params
 	private Calendar cal;
@@ -103,8 +97,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 				new Intent(getActivity(), getClass())
 						.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-		// Intent filters for reading a note from a tag or exchanging over
-		// p2p.
+		// Reading tag
 		IntentFilter ndefDetected = new IntentFilter(
 				NfcAdapter.ACTION_NDEF_DISCOVERED);
 		try {
@@ -113,7 +106,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		}
 		mNdefExchangeFilters = new IntentFilter[] { ndefDetected };
 
-		// Intent filters for writing to a tag
+		// Writing tag
 		IntentFilter tagDetected = new IntentFilter(
 				NfcAdapter.ACTION_TAG_DISCOVERED);
 		mWriteTagFilters = new IntentFilter[] { tagDetected };
@@ -123,27 +116,6 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		reg_id = MainActivity.GCM.getRegistrationId();
 		initCalendar();
 		chooseDate1 = "Permenant Permission";
-		chooseDate2 = "No Limitation";
-		chooseTime2 = "";
-		ch1 = (CheckBox) rootView.findViewById(R.id.nfcpush_fragment_checkBox1);
-		ch1.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
-				chooseTime2 = "" + " " + hour + ":" + minute;
-				if (ch1.isChecked()) {
-					dp2.setVisibility(View.VISIBLE);
-					tp.setVisibility(View.VISIBLE);
-				} else {
-					chooseDate2 = "No limitaion";
-					chooseTime2 = "";
-					dp2.setVisibility(View.GONE);
-					tp.setVisibility(View.GONE);
-				}
-			}
-		});
 		rg = (RadioGroup) rootView
 				.findViewById(R.id.nfcpush_fragment_radioGroup1);
 		rb1 = (RadioButton) rootView.findViewById(R.id.nfcpush_fragment_radio0);
@@ -165,23 +137,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		dp1 = (DatePicker) rootView
 				.findViewById(R.id.nfcpush_fragment_datePicker1);
 		dp1.setVisibility(View.GONE);
-		dp2 = (DatePicker) rootView
-				.findViewById(R.id.nfcpush_fragment_datePicker2);
-		dp2.setVisibility(View.GONE);
 		setDatePicker1(dp1);
-		setDatePicker2(dp2);
-		tp = (TimePicker) rootView
-				.findViewById(R.id.nfcpush_fragment_timePicker1);
-		tp.setVisibility(View.GONE);
-		tp.setOnTimeChangedListener(new OnTimeChangedListener() {
-
-			@Override
-			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-				NFCTabFragment.this.hour = hourOfDay;
-				NFCTabFragment.this.minute = minute;
-				chooseTime2 = "" + " " + hour + ":" + minute;
-			}
-		});
 		btnStart = (Button) rootView
 				.findViewById(R.id.nfcpush_fragment_button1);
 		btnStart.setOnClickListener(new OnClickListener() {
@@ -190,22 +146,26 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				strToGen = "FleetChat" + "duration:" + chooseDate1
-						+ "expiration:" + chooseDate2 + "-" + chooseTime2 + ""
-						+ "regID:" + reg_id + "UserName:" + USER_NAME;
+						+ "expiration:" + "" + "regID:" + reg_id + "UserName:"
+						+ USER_NAME;
 				enableNdefExchangeMode();
 				disableTagWriteMode();
 
 				new AlertDialog.Builder(getActivity())
 						.setTitle("Waiting...")
 						.setMessage("Wait for exchange device")
-						.setOnCancelListener(
-								new DialogInterface.OnCancelListener() {
-									@Override
-									public void onCancel(DialogInterface dialog) {
-										disableTagWriteMode();
-										enableNdefExchangeMode();
+						.setPositiveButton("exchange finished",
+								new DialogInterface.OnClickListener() {
+
+									public void onClick(DialogInterface dialog,
+											int id) {
+										// TODO Auto-generated method stub
+										if (id == DialogInterface.BUTTON_POSITIVE) {
+											disableNdefExchangeMode();
+											enableTagWriteMode();
+										}
 									}
-								}).create().show();
+								}).show();
 			}
 		});
 	}
@@ -225,30 +185,6 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 			writeTag(getNoteAsNdef(), detectedTag);
 		}
 	}
-
-	private TextWatcher mTextWatcher = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-
-		}
-
-		@SuppressWarnings("deprecation")
-		@Override
-		public void afterTextChanged(Editable arg0) {
-			if (mResumed) {
-				mNfcAdapter.enableForegroundNdefPush(getActivity(),
-						getNoteAsNdef());
-			}
-		}
-	};
 
 	private void promptForContent(final NdefMessage msg) {
 		strFromDevice = new String(msg.getRecords()[0].getPayload());
@@ -293,6 +229,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		mResumed = true;
 		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getActivity().getIntent()
 				.getAction())) {
 			NdefMessage[] messages = getNdefMessages(getActivity().getIntent());
@@ -414,22 +351,6 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 				NFCTabFragment.this.day = day;
 				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/" + day;
 				Log.i("Date1", chooseDate1);
-			}
-		});
-
-	}
-
-	private void setDatePicker2(DatePicker dp) {
-		initCalendar();
-		dp.init(year, month, day, new OnDateChangedListener() {
-
-			@Override
-			public void onDateChanged(DatePicker dp, int year, int month,
-					int day) {
-				NFCTabFragment.this.year = year;
-				NFCTabFragment.this.month = month;
-				NFCTabFragment.this.day = day;
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
 			}
 		});
 	}
