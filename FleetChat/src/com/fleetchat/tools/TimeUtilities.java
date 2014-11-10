@@ -24,6 +24,15 @@ public class TimeUtilities {
 	public static String getTimehhmm(Date d) {
 		return (String) DateFormat.format("hh:mm", d);
 	}
+	
+	/**
+	 * get yyyyMMddhhmmss
+	 * 
+	 * @return ex. 20141105181533
+	 */
+	public static String getTimeyyyyMMddhhmmss(Date d) {
+		return (String) DateFormat.format("yyyyMMddhhmmss", d);
+	}
 
 	/**
 	 * get yyyyMMddhhmmss

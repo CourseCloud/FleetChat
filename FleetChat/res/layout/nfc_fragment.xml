@@ -10,23 +10,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Some user guides..."
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/nfcpush_activity_btn1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/success" />
-
-        <ImageView
-            android:id="@+id/nfcpush_activity_btn2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/success" />
     </LinearLayout>
 
     <ScrollView
@@ -39,13 +32,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/nfcpush_fragment_tv"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
@@ -55,33 +41,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" >
-
-                    <RadioButton
-                        android:id="@+id/nfcpush_fragment_radio0"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="@string/nfcpush_fragment_rb1" />
-
-                    <RadioButton
-                        android:id="@+id/nfcpush_fragment_radio1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/nfcpush_fragment_rb2" />
                 </RadioGroup>
             </LinearLayout>
-
-            <DatePicker
-                android:id="@+id/nfcpush_fragment_datePicker1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:calendarViewShown="false"
-                android:endYear="2030"
-                android:spinnersShown="true"
-                android:startYear="2014" />
 
             <Button
                 android:id="@+id/nfcpush_fragment_button1"

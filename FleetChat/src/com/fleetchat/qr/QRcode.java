@@ -126,9 +126,8 @@ public class QRcode extends FragmentActivity {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView,
 						boolean isChecked) {
-					chooseDate2 = "" + " " + year + "/" + (month + 1) + "/"
-							+ day;
-					chooseTime2 = "" + " " + hour + ":" + minute;
+					chooseDate2 = "" + year + (month + 1) + day;
+					chooseTime2 = "" + hour + minute;
 					if (ch1.isChecked()) {
 						dp2.setVisibility(View.VISIBLE);
 						tp.setVisibility(View.VISIBLE);
@@ -179,7 +178,7 @@ public class QRcode extends FragmentActivity {
 						int minute) {
 					QRcodeFragment.this.hour = hourOfDay;
 					QRcodeFragment.this.minute = minute;
-					chooseTime2 = "" + " " + hour + ":" + minute;
+					chooseTime2 = "" + hour + minute;
 				}
 			});
 			btn_generate = (Button) rootView
@@ -188,9 +187,9 @@ public class QRcode extends FragmentActivity {
 
 				@Override
 				public void onClick(View v) {
-					strToGen = "FleetChat" + "duration:" + chooseDate1
-							+ "expiration:" + chooseDate2 + "-" + chooseTime2
-							+ "" + "regID:" + reg_id + "UserName:" + USER_NAME;
+					strToGen = "FleetChat" + "deadline:" + chooseDate1
+							+ "expiration:" + chooseDate2 + chooseTime2 + ""
+							+ "regID:" + reg_id + "UserName:" + USER_NAME;
 
 					int smallerDimension = width < height ? width : height;
 					smallerDimension = smallerDimension * 1 / 2;
@@ -241,8 +240,7 @@ public class QRcode extends FragmentActivity {
 					QRcodeFragment.this.year = year;
 					QRcodeFragment.this.month = month;
 					QRcodeFragment.this.day = day;
-					chooseDate2 = "" + " " + year + "/" + (month + 1) + "/"
-							+ day;
+					chooseDate2 = "" + year + (month + 1) + day;
 				}
 			});
 		}
@@ -307,12 +305,7 @@ public class QRcode extends FragmentActivity {
 		private int hour;
 		private int minute;
 
-		// String used to generate qrcode
-		private String strToGen;
-		private String chooseDate1, chooseDate2;
-		private String chooseTime2;
-
-		// Contact details
+		// local reg id
 		private String reg_id;
 		private FileIO fio;
 
@@ -368,23 +361,22 @@ public class QRcode extends FragmentActivity {
 								.split("UserName:")[1];
 						String gcmidFromOther = contents.split("regID:")[1]
 								.split("UserName:")[0];
-						String during = contents.split("duration:")[1]
-								.split("expiration")[0];
+						String deadline = contents.split("expiration:")[1]
+								.split("regID:")[0];
 						regIds.add(gcmidFromOther);
 						item.put(EXTRA_NAME, name);
 						item.put(EXTRA_GCMID, gcmidFromOther);
-						item.put(EXTRA_DATE, during);
+						item.put(EXTRA_DATE, deadline);
 
 						// TODO (Ho) Need Add GCM function.
 						// getRegistrationId change to someone's id.
-						// getTimeyyyyMMddhhmmss change to qrDeadlineTime 
-						MainActivity.GCM.postDataAddFriend(
-								MainActivity.GCM.getRegistrationId(),
-								TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
-						
+						// getTimeyyyyMMddhhmmss change to qrDeadlineTime
+
 						fio = new FileIO(getActivity());
 						if (fio.addContact(item)) {
 							fio.addContact(item);
+							MainActivity.GCM.postDataAddFriend(gcmidFromOther,
+									deadline, "Annoymous");
 							Toast t = Toast.makeText(getActivity(),
 									"Friend has been added successfully",
 									Toast.LENGTH_SHORT);
