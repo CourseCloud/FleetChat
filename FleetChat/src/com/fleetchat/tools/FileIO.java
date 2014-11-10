@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.fleetchat.R;
 import com.fleetchat.util.FileIOConstants;
+import com.fleetchat.util.GCMConstants;
 
 import android.content.Context;
 import android.util.Log;
 
-public class FileIO implements FileIOConstants {
+public class FileIO implements FileIOConstants, GCMConstants {
 
 	private static final String TAG = "FileIO";
 
@@ -34,7 +36,7 @@ public class FileIO implements FileIOConstants {
 	/**************************************************************************/
 	/** Dir **/
 	/**************************************************************************/
-	
+
 	/**
 	 * Get chat folder's direction.
 	 * 
@@ -70,7 +72,6 @@ public class FileIO implements FileIOConstants {
 		}
 		return f.list();
 	}
-	
 
 	/**************************************************************************/
 	/** Chat **/
@@ -143,6 +144,16 @@ public class FileIO implements FileIOConstants {
 			return ifAddSuccess;
 		}
 
+	}
+
+	public Boolean addContact(String name, String date, String gcmid) {
+		HashMap<String, Object> item = new HashMap<String, Object>();
+		item.put("pic1", R.drawable.ic_launcher);
+		item.put(EXTRA_NAME, name);
+		item.put(EXTRA_GCMID, date);
+		item.put(EXTRA_DATE, gcmid);
+
+		return addContact(item);
 	}
 
 	@SuppressWarnings("unchecked")
