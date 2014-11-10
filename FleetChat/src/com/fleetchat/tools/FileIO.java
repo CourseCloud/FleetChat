@@ -113,10 +113,6 @@ public class FileIO implements FileIOConstants {
 		}
 	}
 
-	public void writeContact(ArrayList<HashMap<String, Object>> list) {
-		File file = new File(_context.getFilesDir(), CONTACT);
-		writeObject(file, list);
-	}
 
 	/**************************************************************************/
 	/** Contact **/
@@ -173,10 +169,11 @@ public class FileIO implements FileIOConstants {
 		writeObject(file, list);
 	}
 
-	public void addChatDetail(String filename, String message) {
+	public void addChatDetail(String filename, String message, boolean myPost) {
 		HashMap<String, Object> item = new HashMap<String, Object>();
 		item.put(MESSAGE, message);
 		item.put(TIME, TimeUtilities.getTimeyyyyMMddhhmmss());
+		item.put(WHO_POST, myPost);
 
 		addChatDetail(filename, item);
 	}

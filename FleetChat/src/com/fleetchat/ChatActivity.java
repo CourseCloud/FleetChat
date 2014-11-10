@@ -56,7 +56,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 				break;
 			}
 		}
-		
+
 		// Create File
 		fio.addChatDetail(_contact, new HashMap<String, Object>());
 
@@ -92,7 +92,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 
 			@Override
 			public void onClick(View v) {
-				fio.addChatDetail(_contact, _etMessage.getText().toString());
+				fio.addChatDetail(_contact, _etMessage.getText().toString(),
+						true);
 
 				_etMessage.setText("");
 
@@ -112,6 +113,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
 
 		String s = "";
+		// Read MESSAGE only
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				s = s + list.get(i).get(MESSAGE) + "\n";

@@ -3,21 +3,9 @@ package com.fleetchat.tools;
 import java.util.Date;
 
 import android.text.format.DateFormat;
-import android.text.format.Time;
-import android.util.Log;
 
 public class TimeUtilities {
 	private static final String TAG = "TimeUtilities";
-
-	/**
-	 * Get current time.
-	 * 
-	 * @return
-	 */
-	public static String getTime() {
-		Log.d(TAG, getNowTime().toString());
-		return getNowTime().toString();
-	}
 
 	/**
 	 * get hour:minute
@@ -46,9 +34,4 @@ public class TimeUtilities {
 		return (String) DateFormat.format("yyyyMMddhhmmss", new Date());
 	}
 
-	private static Time getNowTime() {
-		Time now = new Time();
-		now.setToNow();
-		return now;
-	}
 }
