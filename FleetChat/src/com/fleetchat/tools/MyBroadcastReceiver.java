@@ -45,9 +45,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			// TODO 收到訊息後，fileIO到txt檔
 			Log.w(TAG, "get ACTION_SEND_MESSAGE !!");
 
+			Log.d(TAG, intent.getStringExtra(EXTRA_GCMID));
 			Log.d(TAG, intent.getStringExtra(EXTRA_TITLE));
 			Log.d(TAG, intent.getStringExtra(EXTRA_MESSAGE));
 			Log.d(TAG, intent.getStringExtra(EXTRA_DATE));
+
+			FileIO fio = new FileIO(context);
+			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID), intent.getStringExtra(EXTRA_MESSAGE),
+					false);
 		}
 		// ACTION_ADD_FRIEND
 		else if (action.equals(ACTION_ADD_FRIEND)) {
@@ -102,6 +107,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			} else if (action.equals(ACTION_SEND_MESSAGE)) {
 
 				intent.putExtra(EXTRA_ACTION, ACTION_SEND_MESSAGE);
+				intent.putExtra(EXTRA_GCMID, bundle.getString(EXTRA_GCMID));
 				intent.putExtra(EXTRA_TITLE, bundle.getString(EXTRA_TITLE));
 				intent.putExtra(EXTRA_MESSAGE, bundle.getString(EXTRA_MESSAGE));
 				intent.putExtra(EXTRA_DATE, bundle.getString(EXTRA_DATE));

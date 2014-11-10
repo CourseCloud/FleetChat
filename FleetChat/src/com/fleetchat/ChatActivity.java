@@ -99,6 +99,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 			public void onClick(View v) {
 				fio.addChatDetail(_contact, _etMessage.getText().toString(),
 						true);
+				//TODO (Xu) post message
+				
 
 				_etMessage.setText("");
 

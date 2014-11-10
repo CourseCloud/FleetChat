@@ -60,10 +60,11 @@ public class GCMUtilities implements GCMConstants {
 					if (regIds.size() > 0) {
 						Message.Builder msg = new Message.Builder();
 						msg.addData(EXTRA_ACTION, ACTION_SEND_MESSAGE);
+						msg.addData(EXTRA_GCMID, getRegistrationId());
 						msg.addData(EXTRA_TITLE, title);
 						msg.addData(EXTRA_MESSAGE, message);
-						String date = TimeUtilities.getTimeyyyyMMddhhmmss();
-						msg.addData(EXTRA_DATE, date);
+						msg.addData(EXTRA_DATE,
+								TimeUtilities.getTimeyyyyMMddhhmmss());
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
 								regIds);
@@ -75,6 +76,13 @@ public class GCMUtilities implements GCMConstants {
 
 			}
 		}).start();
+	}
+
+	public void postDataSendMessage(String regId, final String title,
+			final String message) {
+		List<String> regIds = new ArrayList<String>();
+		regIds.add(regId);
+		postDataSendMessage(regIds, title, message);
 	}
 
 	public void postDataAddFriends(final List<String> friendRegIDs,

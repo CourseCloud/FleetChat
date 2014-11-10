@@ -42,8 +42,8 @@ public class GCMIntentService extends GCMBaseIntentService implements
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
 		Log.i(TAG, "Device registered: regId = " + registrationId);
-//		MyBroadcastReceiver.displayMessage(context,
-//				getString(R.string.gcm_registered, registrationId));
+		// MyBroadcastReceiver.displayMessage(context,
+		// getString(R.string.gcm_registered, registrationId));
 		// ServerUtilities.register(context, registrationId);
 	}
 
@@ -68,19 +68,33 @@ public class GCMIntentService extends GCMBaseIntentService implements
 		// }
 		// }
 		MyBroadcastReceiver.sendMessage(context, intent.getExtras());
+		String title = getString(R.string.app_name);
+		String message = getString(R.string.gcm_message);
+
+		try {
+			if (intent.getStringExtra(EXTRA_NAME) != null) {
+				title = intent.getStringExtra(EXTRA_NAME);
+			}
+			if (intent.getStringExtra(EXTRA_MESSAGE) != null) {
+				message = intent.getStringExtra(EXTRA_MESSAGE);
+			}
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
 
 		// TODO notice should change title
 		// notifies user
-		generateNotification(context, getString(R.string.gcm_message));
+		generateNotification(context, title, message);
 	}
 
 	@Override
 	protected void onDeletedMessages(Context context, int total) {
 		Log.i(TAG, "Received deleted messages notification");
+		String title = getString(R.string.app_name);
 		String message = getString(R.string.gcm_deleted, total);
 		MyBroadcastReceiver.displayMessage(context, message);
 		// notifies user
-		generateNotification(context, message);
+		generateNotification(context, title, message);
 	}
 
 	@Override
@@ -102,13 +116,13 @@ public class GCMIntentService extends GCMBaseIntentService implements
 	/**
 	 * Issues a notification to inform the user that server has sent a message.
 	 */
-	private static void generateNotification(Context context, String message) {
+	private static void generateNotification(Context context, String title,
+			String message) {
 		int icon = R.drawable.ic_stat_gcm;
 		long when = System.currentTimeMillis();
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(icon, message, when);
-		String title = context.getString(R.string.app_name);
 		Intent notificationIntent = new Intent(context, MainActivity.class);
 		// set intent so it does not start a new activity
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
