@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import com.fleetchat.R;
 import com.fleetchat.qr.QRGeneratorFragment;
 import com.fleetchat.qr.QRScannerFragment;
-import com.fleetchat.qr.QRcode;
 
 public class QRTabFragment extends Fragment {
 	View view;

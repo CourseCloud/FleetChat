@@ -126,27 +126,22 @@ public class FileIO implements FileIOConstants, GCMConstants {
 	/** Contact **/
 	/**************************************************************************/
 
-	public Boolean addContact(HashMap<String, Object> item) {
+	public boolean addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
 		Log.i("path", _context.getFilesDir() + "");
 		ArrayList<HashMap<String, Object>> list;
-		if (file.exists()) {
-			file.delete();
-			return false;
-		} else {
-			if (getContact() == null) {
-				list = new ArrayList<HashMap<String, Object>>();
-			} else {
-				list = getContact();
-			}
-			list.add(item);
-			Boolean ifAddSuccess = writeObject(file, list);
-			return ifAddSuccess;
-		}
 
+		if (getContact() == null) {
+			list = new ArrayList<HashMap<String, Object>>();
+		} else {
+			list = getContact();
+		}
+		list.add(item);
+		writeObject(file, list);
+		return true;
 	}
 
-	// TODO (Ho) use it 
+	// TODO (Ho) use it
 	public Boolean checkContactExist(String gcmid) {
 
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
@@ -157,7 +152,7 @@ public class FileIO implements FileIOConstants, GCMConstants {
 		// Read MESSAGE only
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
-				if(list.get(i).get(EXTRA_GCMID).equals(gcmid)){
+				if (list.get(i).get(EXTRA_GCMID).equals(gcmid)) {
 					return true;
 				}
 			}
@@ -165,15 +160,14 @@ public class FileIO implements FileIOConstants, GCMConstants {
 		return false;
 	}
 
-	public Boolean addContact(String name, String date, String gcmid) {
-		HashMap<String, Object> item = new HashMap<String, Object>();
-		item.put("pic1", R.drawable.ic_launcher);
-		item.put(EXTRA_NAME, name);
-		item.put(EXTRA_GCMID, date);
-		item.put(EXTRA_DATE, gcmid);
-
-		return addContact(item);
-	}
+	/*
+	 * public Boolean addContact(String name, String date, String gcmid) {
+	 * HashMap<String, Object> item = new HashMap<String, Object>();
+	 * item.put("pic1", R.drawable.ic_launcher); item.put(EXTRA_NAME, name);
+	 * item.put(EXTRA_GCMID, date); item.put(EXTRA_DATE, gcmid);
+	 * 
+	 * return addContact(item); }
+	 */
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<HashMap<String, Object>> getContact() {

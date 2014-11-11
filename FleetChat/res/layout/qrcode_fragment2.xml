@@ -4,19 +4,27 @@
     android:layout_gravity="center"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/qrcode_fragment2_Scan"
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="Scan" >
-    </Button>
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        android:text="You must download the app &quot;Barcode scanner&quot; first!"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageView
+        android:id="@+id/qrcode_fragment2_Scanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/scanbtn" />
 
 </LinearLayout>

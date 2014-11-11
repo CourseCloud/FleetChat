@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,12 +38,8 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 	private static final String PACKAGE = "com.google.zxing.client.android";
 
 	// UIs
-	private RadioGroup rg;
-	private RadioButton rb1, rb2;
-	private CheckBox ch1;
-	private DatePicker dp1, dp2;
-	private TimePicker tp;
-	private Button btn_generate;
+	private TextView tvMessage;
+	private ImageView btScan;
 	private View rootView;
 
 	// datePicker params
@@ -74,12 +71,9 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 		return rootView;
 	}
 
-	private TextView tvMessage;
-	private Button btScan;
-
 	private void init() {
 		tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
-		btScan = (Button) rootView.findViewById(R.id.qrcode_fragment2_Scan);
+		btScan = (ImageView) rootView.findViewById(R.id.qrcode_fragment2_Scanner);
 		btScan.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -107,25 +101,22 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 						&& contents.split("duration:")[0]
 								.equalsIgnoreCase("FleetChat")) {
 					HashMap<String, Object> item = new HashMap<String, Object>();
-					item.put(EXTRA_NAME,
-							contents.split("regID:")[1].split("UserName:")[1]);
-					item.put(EXTRA_GCMID,
-							contents.split("regID:")[1].split("UserName:")[0]);
-					item.put(
-							EXTRA_DATE,
-							contents.split("duration:")[1].split("expiration")[0]);
-
-					// TODO (Ho) Need Add GCM function.
-					// getRegistrationId change to someone's id.
-					// getTimeyyyyMMddhhmmss change to qrDeadlineTime 
-					MainActivity.GCM.postDataAddFriend(
-							MainActivity.GCM.getRegistrationId(),
-							TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
+					String name = contents.split("regID:")[1]
+							.split("UserName:")[1];
+					String gcmidFromOther = contents.split("regID:")[1]
+							.split("UserName:")[0];
+					String deadline = contents.split("expiration:")[1]
+							.split("regID:")[0];
+					item.put(EXTRA_NAME, name);
+					item.put(EXTRA_DATE, deadline);
+					item.put(EXTRA_GCMID, gcmidFromOther);
 
 					fio = new FileIO(getActivity());
 					if (fio.addContact(item)) {
+						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
+								deadline, "Annoymous");
 						Toast t = Toast.makeText(getActivity(),
-								"Friend has been added successfully",
+								"Friend has been added/updated successfully",
 								Toast.LENGTH_SHORT);
 						t.show();
 						message = "Content: " + contents + "\nFormat: "
