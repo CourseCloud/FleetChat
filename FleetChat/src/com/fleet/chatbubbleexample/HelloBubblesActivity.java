@@ -35,7 +35,7 @@ public class HelloBubblesActivity extends Activity {
 
 		lv.setAdapter(adapter);
 
-		editText1 = (EditText) findViewById(R.id.chat_activity_editText_chatLayout);
+//		editText1 = (EditText) findViewById(R.id.chat_activity_editText_chatLayout);
 		editText1.setOnKeyListener(new OnKeyListener() {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				// If the event is a key-down event on the "enter" button

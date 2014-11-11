@@ -10,12 +10,12 @@
         android:layout_height="0dp"
         android:layout_weight="1" >
 
-        <LinearLayout
-            android:id="@+id/chat_activity_editText_chatLayout"
+        <ListView
+            android:id="@+id/chat_activity_listView1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_height="wrap_content" >
+        </ListView>
+
     </ScrollView>
 
     <LinearLayout

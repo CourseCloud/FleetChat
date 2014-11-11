@@ -39,7 +39,7 @@ public class QRGeneratorFragment extends Fragment {
 	private CheckBox ch1;
 	private DatePicker  dp2;
 	private TimePicker tp;
-	private Button btn_generate;
+	private ImageView btn_generate;
 	private View rootView;
 
 	// dialog params
@@ -123,7 +123,7 @@ public class QRGeneratorFragment extends Fragment {
 				chooseTime2 = "" + " " + hour + ":" + minute;
 			}
 		});
-		btn_generate = (Button) rootView
+		btn_generate = (ImageView) rootView
 				.findViewById(R.id.qrcode_fragment_button1);
 		btn_generate.setOnClickListener(new OnClickListener() {
 

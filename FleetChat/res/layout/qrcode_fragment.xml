@@ -30,6 +30,8 @@
                 android:id="@+id/qrcode_fragment_checkBox1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
                 android:text="@string/qrcode_fragment_ch1" />
 
             <DatePicker
@@ -45,14 +47,17 @@
             <TimePicker
                 android:id="@+id/qrcode_fragment_timePicker1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/qrcode_fragment_button1"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/qrcode_fragment_btn" />
+                android:layout_marginBottom="30dp" />
+
         </LinearLayout>
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/qrcode_fragment_button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/qrgenbtn" />
 
 </LinearLayout>

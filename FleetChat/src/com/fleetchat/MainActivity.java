@@ -51,19 +51,24 @@ public class MainActivity extends FragmentActivity {
 				switch (tab.getPosition()) {
 				case 0:
 					fragment = new ContactFragment();
+					tab.setIcon(R.drawable.friendclick);
 					break;
 				case 1:
 					fragment = new ChatListFragment();
+					tab.setIcon(R.drawable.chatclick);
 					break;
 				case 2:
 					fragment = new DemoFragment();
+					tab.setIcon(R.drawable.settingsclick);
 					break;
 				case 3:
 					fragment = new QRTabFragment();
+					tab.setIcon(R.drawable.qrnewclick);
 					break;
 				case 4:
 					// TODO (Ho,Xu) Need to invisiable it, if phone no NFC.
 					fragment = new NFCTabFragment();
+					tab.setIcon(R.drawable.nfcclick);
 					break;
 				}
 
@@ -87,7 +92,24 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onTabUnselected(Tab tab,
 					android.app.FragmentTransaction ft) {
-
+				switch (tab.getPosition()) {
+				case 0:
+					tab.setIcon(R.drawable.friend);
+					break;
+				case 1:
+					tab.setIcon(R.drawable.chat);
+					break;
+				case 2:
+					tab.setIcon(R.drawable.settings);
+					break;
+				case 3:
+					tab.setIcon(R.drawable.qrnew);
+					break;
+				case 4:
+					// TODO (Ho,Xu) Need to invisiable it, if phone no NFC.
+					tab.setIcon(R.drawable.nfc);
+					break;
+				}
 			}
 
 			@Override
@@ -96,14 +118,21 @@ public class MainActivity extends FragmentActivity {
 
 			}
 		};
-
-		// Add 3 tabs, specifying the tab's text and TabListener
-		for (int i = 0; i < 5; i++) {
-			Tab tab = actionBar.newTab().setText("Tab " + (i + 1))
-					.setTabListener(tabListener)
-					.setIcon(R.drawable.ic_launcher);
-			actionBar.addTab(tab);
-		}
+		Tab friendTab = actionBar.newTab().setTabListener(tabListener)
+				.setIcon(R.drawable.friend);
+		actionBar.addTab(friendTab);
+		Tab chatTab = actionBar.newTab().setTabListener(tabListener)
+				.setIcon(R.drawable.chat);
+		actionBar.addTab(chatTab);
+		Tab settingTab = actionBar.newTab().setTabListener(tabListener)
+				.setIcon(R.drawable.settings);
+		actionBar.addTab(settingTab);
+		Tab qrTab = actionBar.newTab().setTabListener(tabListener)
+				.setIcon(R.drawable.qrnew);
+		actionBar.addTab(qrTab);
+		Tab nfcTab = actionBar.newTab().setTabListener(tabListener)
+				.setIcon(R.drawable.nfc);
+		actionBar.addTab(nfcTab);
 	}
 
 	@Override

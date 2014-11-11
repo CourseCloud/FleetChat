@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,12 +38,8 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 	private static final String PACKAGE = "com.google.zxing.client.android";
 
 	// UIs
-	private RadioGroup rg;
-	private RadioButton rb1, rb2;
-	private CheckBox ch1;
-	private DatePicker dp1, dp2;
-	private TimePicker tp;
-	private Button btn_generate;
+	private TextView tvMessage;
+	private ImageView btScan;
 	private View rootView;
 
 	// datePicker params
@@ -74,12 +71,9 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 		return rootView;
 	}
 
-	private TextView tvMessage;
-	private Button btScan;
-
 	private void init() {
 		tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
-		btScan = (Button) rootView.findViewById(R.id.qrcode_fragment2_Scan);
+		btScan = (ImageView) rootView.findViewById(R.id.qrcode_fragment2_Scanner);
 		btScan.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {

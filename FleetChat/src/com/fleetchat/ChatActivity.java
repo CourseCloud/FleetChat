@@ -12,7 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
+import com.fleet.chatbubbleexample.DiscussArrayAdapter;
+import com.fleet.chatbubbleexample.OneComment;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.tools.StringUtilities;
 import com.fleetchat.util.FileIOConstants;
@@ -25,17 +28,21 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private EditText _etContent;
 	private EditText _etMessage;
 	private Button _btnSend;
+	private ListView _lvContent;
 
 	// Class
 	private FileIO fio;
 	private String _contact = "temp";
+
+	// bubble params
+	private com.fleet.chatbubbleexample.DiscussArrayAdapter bubbleAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		fio = new FileIO(getApplicationContext());
 
-		setContentView(R.layout.chat_activity);
+		setContentView(R.layout.chat_activity2);
 		Initialize();
 		setView();
 
@@ -68,11 +75,16 @@ public class ChatActivity extends Activity implements GCMConstants,
 	}
 
 	private void setView() {
-		_etContent = (EditText) findViewById(R.id.chat_activity_editText_content);
+		bubbleAdapter = new DiscussArrayAdapter(getApplicationContext(),
+				R.layout.chat_activity_item_me);
+		_lvContent = (ListView) findViewById(R.id.chat_activity_listView1);
+		_lvContent.setAdapter(bubbleAdapter);
+		// _etContent = (EditText)
+		// findViewById(R.id.chat_activity_editText_content);
 		_etMessage = (EditText) findViewById(R.id.chat_activity_editText_message);
 		_btnSend = (Button) findViewById(R.id.chat_activity_button_send);
 
-		// If _etMessage is empty, set _btnSend enabled.
+		// If _etMessage is empty, set _btnSend disabled.
 		_etMessage.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -99,16 +111,14 @@ public class ChatActivity extends Activity implements GCMConstants,
 			public void onClick(View v) {
 				fio.addChatDetail(_contact, _etMessage.getText().toString(),
 						true);
-				//TODO (Xu) post message
-				
-
+				// TODO (Xu) post message
+				setContent();
 				_etMessage.setText("");
 
-				setContent();
 			}
 		});
 
-		setContent();
+//		 setContent();
 
 	}
 
@@ -117,18 +127,24 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private void setContent() {
 
 		list = fio.getChatDetail(_contact);
-		//	TODO "DEBUG"
+		// TODO "DEBUG"
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
 
 		String s = "";
+		s = _etMessage.getText().toString();
 		// Read MESSAGE only
-		if (list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				s = s + list.get(i).get(MESSAGE) + "\n";
-			}
-		}
+		addBubble(s, true);
+		/*
+		 * if (list != null) { for (int i = 0; i < list.size(); i++) { s = s +
+		 * list.get(i).get(MESSAGE) + "\n"; } }
+		 */
 
-		_etContent.setText(s);
+		// _etContent.setText(s);
 	}
 
+	// b stands for that the bubble comes out from "right"(OtherFriend) or
+	// "left"(User)
+	private void addBubble(String s, boolean b) {
+		bubbleAdapter.add(new OneComment(b, s));
+	}
 }
