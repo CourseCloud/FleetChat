@@ -29,8 +29,8 @@ import android.widget.Toast;
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.fleetchat.tools.FileIO;
-import com.fleetchat.tools.TimeUtilities;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 
 // TODO (Ho) Need to fix it.
 public class QRScannerFragment extends Fragment implements GCMConstants {

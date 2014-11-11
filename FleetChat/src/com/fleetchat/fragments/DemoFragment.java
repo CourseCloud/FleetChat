@@ -35,7 +35,7 @@ import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.ConnectionDetector;
-import com.fleetchat.tools.TimeUtilities;
+import com.fleetchat.util.TimeUtilities;
 import com.google.android.gcm.GCMRegistrar;
 
 /**

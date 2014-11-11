@@ -18,6 +18,7 @@ import java.util.HashMap;
 import com.fleetchat.R;
 import com.fleetchat.util.FileIOConstants;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 
 import android.content.Context;
 import android.util.Log;

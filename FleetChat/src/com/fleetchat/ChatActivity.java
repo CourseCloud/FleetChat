@@ -17,9 +17,9 @@ import android.widget.ListView;
 import com.fleet.chatbubbleexample.DiscussArrayAdapter;
 import com.fleet.chatbubbleexample.OneComment;
 import com.fleetchat.tools.FileIO;
-import com.fleetchat.tools.StringUtilities;
 import com.fleetchat.util.FileIOConstants;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.StringUtilities;
 
 public class ChatActivity extends Activity implements GCMConstants,
 		FileIOConstants {
@@ -36,6 +36,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 
 	// bubble params
 	private com.fleet.chatbubbleexample.DiscussArrayAdapter bubbleAdapter;
+	private String _contactName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 			ArrayList<HashMap<String, Object>> list = fio.getContact();
 			for (HashMap<String, Object> item : list) {
 				if (item.get(EXTRA_GCMID).equals(_contact)) {
-					actionBar.setTitle((CharSequence) item.get(EXTRA_NAME));
+					_contactName = (String) item.get(EXTRA_NAME);
+					actionBar.setTitle(_contactName);
 					break;
 				}
 			}
@@ -112,19 +114,20 @@ public class ChatActivity extends Activity implements GCMConstants,
 				fio.addChatDetail(_contact, _etMessage.getText().toString(),
 						true);
 				// TODO (Xu) post message
+				MainActivity.GCM.postDataSendMessage(_contact, _contactName,
+						_etMessage.getText().toString());
 				setContent();
 				_etMessage.setText("");
 
 			}
 		});
 
-//		 setContent();
+		setContent();
 
 	}
 
-	ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-
 	private void setContent() {
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 
 		list = fio.getChatDetail(_contact);
 		// TODO "DEBUG"
@@ -134,12 +137,17 @@ public class ChatActivity extends Activity implements GCMConstants,
 		s = _etMessage.getText().toString();
 		// Read MESSAGE only
 		addBubble(s, true);
-		/*
-		 * if (list != null) { for (int i = 0; i < list.size(); i++) { s = s +
-		 * list.get(i).get(MESSAGE) + "\n"; } }
-		 */
 
-		// _etContent.setText(s);
+		// TODO (ho) 幫你寫好了，改好addBubble 應該就可以用了
+		// if (list != null) {
+		// for (int i = 0; i < list.size(); i++) {
+		// addBubble((String) list.get(i).get(MESSAGE), (Boolean) list
+		// .get(i).get(WHO_POST));
+		// }
+		// }
+
+		// refresh
+		_lvContent.setAdapter(bubbleAdapter);
 	}
 
 	// b stands for that the bubble comes out from "right"(OtherFriend) or

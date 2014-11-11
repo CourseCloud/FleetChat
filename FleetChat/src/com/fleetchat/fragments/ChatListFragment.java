@@ -6,22 +6,22 @@ import java.util.HashMap;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fleetchat.ChatActivity;
 import com.fleetchat.R;
+import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.FileIO;
-import com.fleetchat.tools.TimeUtilities;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 
 public class ChatListFragment extends Fragment {
 	protected static final String TAG = "Fragment2";
@@ -78,16 +78,23 @@ public class ChatListFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(getActivity(), "" + list.get(position),
-						Toast.LENGTH_SHORT).show();
-
-				Log.d("DEBUG", "" + list.get(position));
-
 				Intent intent = new Intent(getActivity(), ChatActivity.class);
 				Bundle b = new Bundle();
 				b.putString(GCMConstants.EXTRA_GCMID, chatList[position]);
 				intent.putExtras(b);
 				startActivity(intent);
+			}
+		});
+
+		//TODO "DEBUG" use
+		_listview.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				new AlertDialogManager().showMessageDialog(getActivity(),
+						"position = " + position, list.get(position).toString());
+				return false;
 			}
 		});
 	}

@@ -1,4 +1,4 @@
-package com.fleetchat.tools;
+package com.fleetchat.util;
 
 import java.util.Date;
 

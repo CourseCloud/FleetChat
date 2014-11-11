@@ -12,16 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import com.fleetchat.ChatActivity;
 import com.fleetchat.R;
+import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.GCMConstants;
 
 public class ContactFragment extends Fragment implements GCMConstants {
+	private static final String TAG = "ContactFragment";
 	View view;
 
 	@Override
@@ -44,15 +46,14 @@ public class ContactFragment extends Fragment implements GCMConstants {
 
 		fio = new FileIO(getActivity());
 		list = fio.getContact();
-		Log.d("DEBUG", "list = " + list);
+		Log.d(TAG, "list = " + list);
 
 		listview.setOnItemClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Toast.makeText(getActivity(), "" + list.get(position),
-						Toast.LENGTH_SHORT).show();
 
+				// Create Chat File, if it is not existed.
 				File f = new File(fio.getChatDir(), (String) list.get(position)
 						.get(EXTRA_GCMID));
 				if (!f.exists()) {
@@ -60,6 +61,7 @@ public class ContactFragment extends Fragment implements GCMConstants {
 							(String) list.get(position).get(EXTRA_GCMID), "");
 				}
 
+				// Change to Chat Activity.
 				Intent intent = new Intent(getActivity(), ChatActivity.class);
 				Bundle b = new Bundle();
 				b.putString(EXTRA_GCMID,
@@ -69,12 +71,24 @@ public class ContactFragment extends Fragment implements GCMConstants {
 			}
 		});
 
-		if (list != null) {
+		// TODO "DEBUG" use
+		listview.setOnItemLongClickListener(new OnItemLongClickListener() {
 
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				new AlertDialogManager()
+						.showMessageDialog(getActivity(), "position = "
+								+ position, list.get(position).toString());
+				return false;
+			}
+		});
+
+		if (list != null) {
 			simpleAdapter = new SimpleAdapter(getActivity(), list,
 					R.layout.simple_list_item_3, new String[] { "pic1",
-							EXTRA_NAME, EXTRA_DATE }, // keyªº¦W¦r
-					new int[] { R.id.simple_list_item_3_imageView1,
+							EXTRA_NAME, EXTRA_DATE }, new int[] {
+							R.id.simple_list_item_3_imageView1,
 							R.id.simple_list_item_3_textView1,
 							R.id.simple_list_item_3_textView2 });
 			listview.setAdapter(simpleAdapter);

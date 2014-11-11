@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 
+@SuppressWarnings("deprecation")
 public class AlertDialogManager {
 	/**
 	 * Function to display simple Alert Dialog
@@ -27,15 +28,11 @@ public class AlertDialogManager {
 	 *            - success/failure (used to set icon) - pass null if you don't
 	 *            want icon
 	 * */
-	@SuppressWarnings("deprecation")
 	public void showAlertDialog(Context context, String title, String message,
 			Boolean status) {
 		AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
-		// Setting Dialog Title
 		alertDialog.setTitle(title);
-
-		// Setting Dialog Message
 		alertDialog.setMessage(message);
 
 		if (status != null)
@@ -94,6 +91,24 @@ public class AlertDialogManager {
 		ll.addView(input);
 		ll.addView(btn);
 		alertDialog.setView(ll); // uncomment this line
+
+		// Showing Alert Message
+		alertDialog.show();
+	}
+
+	public void showMessageDialog(Context context, String title, String message) {
+		final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+		alertDialog.setTitle(title);
+
+		alertDialog.setMessage(message);
+
+		// Setting OK Button
+		alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				alertDialog.dismiss();
+			}
+		});
 
 		// Showing Alert Message
 		alertDialog.show();

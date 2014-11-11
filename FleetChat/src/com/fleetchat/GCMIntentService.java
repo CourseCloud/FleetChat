@@ -72,8 +72,8 @@ public class GCMIntentService extends GCMBaseIntentService implements
 		String message = getString(R.string.gcm_message);
 
 		try {
-			if (intent.getStringExtra(EXTRA_NAME) != null) {
-				title = intent.getStringExtra(EXTRA_NAME);
+			if (intent.getStringExtra(EXTRA_TITLE) != null) {
+				title = intent.getStringExtra(EXTRA_TITLE);
 			}
 			if (intent.getStringExtra(EXTRA_MESSAGE) != null) {
 				message = intent.getStringExtra(EXTRA_MESSAGE);

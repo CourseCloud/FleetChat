@@ -11,6 +11,7 @@ import android.util.Log;
 import com.fleetchat.GCMIntentService;
 import com.fleetchat.MainActivity;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
