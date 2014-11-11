@@ -37,14 +37,10 @@ public class QRTabFragment extends Fragment {
 
 			switch (v.getId()) {
 			case R.id.qr_tab_fragment_iv1:
-				//TODO (Xu) change fragments
-//				changeFragment(new QRcode.QRcodeFragment());
 				changeFragment(new QRGeneratorFragment());
 
 				break;
 			case R.id.qr_tab_fragment_iv2:
-//				changeFragment(new QRcode.QRcodeFragment2());
-				//TODO (Xu) change fragments
 				changeFragment(new QRScannerFragment());
 
 				break;

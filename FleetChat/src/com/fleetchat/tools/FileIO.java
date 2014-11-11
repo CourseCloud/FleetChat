@@ -146,6 +146,25 @@ public class FileIO implements FileIOConstants, GCMConstants {
 
 	}
 
+	// TODO (Ho) use it 
+	public Boolean checkContactExist(String gcmid) {
+
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+
+		list = getContact();
+		Log.d(TAG, "checkContactExist = " + list);
+
+		// Read MESSAGE only
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if(list.get(i).get(EXTRA_GCMID).equals(gcmid)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public Boolean addContact(String name, String date, String gcmid) {
 		HashMap<String, Object> item = new HashMap<String, Object>();
 		item.put("pic1", R.drawable.ic_launcher);
