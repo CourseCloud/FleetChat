@@ -32,15 +32,12 @@ import com.fleetchat.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
-//TODO (Ho) Need to fix it. 拿掉limited好友限制( 自動刪除好友功能)，將選項改成 產生永久QR Code & 產生有時效性QR Code就好
 public class QRGeneratorFragment extends Fragment {
 	// tab UI
 	private ImageView ivQRgen, ivQRscan;
 	// UIs
-	private RadioGroup rg;
-	private RadioButton rb1, rb2;
 	private CheckBox ch1;
-	private DatePicker dp1, dp2;
+	private DatePicker  dp2;
 	private TimePicker tp;
 	private Button btn_generate;
 	private View rootView;
@@ -66,7 +63,7 @@ public class QRGeneratorFragment extends Fragment {
 
 	// String used to generate qrcode
 	private String strToGen;
-	private String chooseDate1, chooseDate2;
+	private String chooseDate2;
 	private String chooseTime2;
 
 	private String reg_id;
@@ -89,7 +86,6 @@ public class QRGeneratorFragment extends Fragment {
 	private void init() {
 		reg_id = MainActivity.GCM.getRegistrationId();
 		initCalendar();
-		chooseDate1 = "Permenant Permission";
 		chooseDate2 = "No Limitation";
 		chooseTime2 = "";
 		ch1 = (CheckBox) rootView.findViewById(R.id.qrcode_fragment_checkBox1);
@@ -111,31 +107,9 @@ public class QRGeneratorFragment extends Fragment {
 				}
 			}
 		});
-		rg = (RadioGroup) rootView
-				.findViewById(R.id.qrcode_fragment_radioGroup1);
-		rb1 = (RadioButton) rootView.findViewById(R.id.qrcode_fragment_radio0);
-		rb2 = (RadioButton) rootView.findViewById(R.id.qrcode_fragment_radio1);
-		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/" + day;
-				if (rb1.isChecked()) {
-					chooseDate1 = "permenant permission";
-
-					dp1.setVisibility(View.GONE);
-				} else {
-					dp1.setVisibility(View.VISIBLE);
-				}
-			}
-		});
-		dp1 = (DatePicker) rootView
-				.findViewById(R.id.qrcode_fragment_datePicker1);
-		dp1.setVisibility(View.GONE);
 		dp2 = (DatePicker) rootView
 				.findViewById(R.id.qrcode_fragment_datePicker2);
 		dp2.setVisibility(View.GONE);
-		setDatePicker1(dp1);
 		setDatePicker2(dp2);
 		tp = (TimePicker) rootView
 				.findViewById(R.id.qrcode_fragment_timePicker1);
@@ -155,9 +129,9 @@ public class QRGeneratorFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				strToGen = "FleetChat" + "duration:" + chooseDate1
-						+ "expiration:" + chooseDate2 + "-" + chooseTime2 + ""
-						+ "regID:" + reg_id + "UserName:" + USER_NAME;
+				strToGen = "FleetChat" + "duration:" + "expiration:"
+						+ chooseDate2 + "-" + chooseTime2 + "" + "regID:"
+						+ reg_id + "UserName:" + USER_NAME;
 
 				int smallerDimension = width < height ? width : height;
 				smallerDimension = smallerDimension * 1 / 2;
@@ -173,7 +147,6 @@ public class QRGeneratorFragment extends Fragment {
 				} catch (WriterException e) {
 					e.printStackTrace();
 				}
-				tv1.setText(chooseDate1);
 				tv2.setText(chooseDate2 + "  " + chooseTime2);
 				qrDialog.show();
 			}
@@ -190,8 +163,6 @@ public class QRGeneratorFragment extends Fragment {
 				QRGeneratorFragment.this.year = year;
 				QRGeneratorFragment.this.month = month;
 				QRGeneratorFragment.this.day = day;
-				chooseDate1 = "" + " " + year + "/" + (month + 1) + "/" + day;
-				Log.i("Date1", chooseDate1);
 			}
 		});
 
@@ -218,7 +189,6 @@ public class QRGeneratorFragment extends Fragment {
 		qrDialog = new Dialog(getActivity());
 		qrDialog.setContentView(view);
 		qrDialog.setTitle(verif);
-		tv1 = (TextView) view.findViewById(R.id.qrcode_dialog_textView1);
 		tv2 = (TextView) view.findViewById(R.id.qrcode_dialog_textView2);
 		btn1 = (Button) view.findViewById(R.id.qrcode_dialog_button1);
 		btn1.setOnClickListener(new OnClickListener() {

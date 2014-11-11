@@ -117,8 +117,6 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 					item.put(EXTRA_DATE, deadline);
 					item.put(EXTRA_GCMID, gcmidFromOther);
 
-					// TODO (Ho) Need Add GCM function.
-					// getRegistrationId change to someone's id.
 					fio = new FileIO(getActivity());
 					if (fio.addContact(item)) {
 						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
