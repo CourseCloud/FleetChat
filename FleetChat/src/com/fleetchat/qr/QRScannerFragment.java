@@ -107,25 +107,24 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 						&& contents.split("duration:")[0]
 								.equalsIgnoreCase("FleetChat")) {
 					HashMap<String, Object> item = new HashMap<String, Object>();
-					item.put(EXTRA_NAME,
-							contents.split("regID:")[1].split("UserName:")[1]);
-					item.put(EXTRA_GCMID,
-							contents.split("regID:")[1].split("UserName:")[0]);
-					item.put(
-							EXTRA_DATE,
-							contents.split("duration:")[1].split("expiration")[0]);
+					String name = contents.split("regID:")[1]
+							.split("UserName:")[1];
+					String gcmidFromOther = contents.split("regID:")[1]
+							.split("UserName:")[0];
+					String deadline = contents.split("expiration:")[1]
+							.split("regID:")[0];
+					item.put(EXTRA_NAME, name);
+					item.put(EXTRA_DATE, deadline);
+					item.put(EXTRA_GCMID, gcmidFromOther);
 
 					// TODO (Ho) Need Add GCM function.
 					// getRegistrationId change to someone's id.
-					// getTimeyyyyMMddhhmmss change to qrDeadlineTime 
-					MainActivity.GCM.postDataAddFriend(
-							MainActivity.GCM.getRegistrationId(),
-							TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
-
 					fio = new FileIO(getActivity());
 					if (fio.addContact(item)) {
+						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
+								deadline, "Annoymous");
 						Toast t = Toast.makeText(getActivity(),
-								"Friend has been added successfully",
+								"Friend has been added/updated successfully",
 								Toast.LENGTH_SHORT);
 						t.show();
 						message = "Content: " + contents + "\nFormat: "

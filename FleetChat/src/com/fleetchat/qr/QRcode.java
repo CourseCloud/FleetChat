@@ -356,27 +356,25 @@ public class QRcode extends FragmentActivity {
 							&& contents.split("duration:")[0]
 									.equalsIgnoreCase("FleetChat")) {
 						HashMap<String, Object> item = new HashMap<String, Object>();
-						ArrayList<String> regIds = new ArrayList<String>();
 						String name = contents.split("regID:")[1]
 								.split("UserName:")[1];
 						String gcmidFromOther = contents.split("regID:")[1]
 								.split("UserName:")[0];
 						String deadline = contents.split("expiration:")[1]
 								.split("regID:")[0];
-						regIds.add(gcmidFromOther);
 						item.put(EXTRA_NAME, name);
 						item.put(EXTRA_GCMID, gcmidFromOther);
 						item.put(EXTRA_DATE, deadline);
 
 						// TODO (Ho) Need Add GCM function.
-						// getRegistrationId change to someone's id.
 						// getTimeyyyyMMddhhmmss change to qrDeadlineTime
 
 						fio = new FileIO(getActivity());
-						if (fio.addContact(item)) {
+						if (true) {
 							fio.addContact(item);
 							MainActivity.GCM.postDataAddFriend(gcmidFromOther,
 									deadline, "Annoymous");
+							
 							Toast t = Toast.makeText(getActivity(),
 									"Friend has been added successfully",
 									Toast.LENGTH_SHORT);
@@ -384,6 +382,8 @@ public class QRcode extends FragmentActivity {
 							message = "Content: " + contents + "\nFormat: "
 									+ format;
 						} else {
+							Log.i("gcm1", gcmidFromOther);
+							Log.i("gcm2", reg_id);
 							Toast t = Toast.makeText(getActivity(),
 									"You two are friends already!",
 									Toast.LENGTH_SHORT);

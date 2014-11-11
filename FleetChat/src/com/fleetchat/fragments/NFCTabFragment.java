@@ -2,6 +2,9 @@ package com.fleetchat.fragments;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+
+import org.w3c.dom.Text;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -21,6 +24,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +34,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fleetchat.MainActivity;
@@ -44,9 +49,8 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	private NfcAdapter mNfcAdapter;
 	private boolean mResumed = false;
 	private boolean mWriteMode = false;
-	private ProgressDialog pd;
+	private TextView tv1;
 	private Toast toast;
-	private EditText mNote;
 	// basic UIs
 	private RadioGroup rg;
 	private RadioButton rb1, rb2;
@@ -54,22 +58,19 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	// Strings to deliver
 	private String chooseDate1;
 	private String strToGen = "";
-	// datePicker params
-	private Calendar cal;
-	private int year;
-	private int month;
-	private int day;
-	private int hour;
-	private int minute;
+	private String stFromDevice;
+
+	private FileIO fio1;
 
 	PendingIntent mNfcPendingIntent;
 	IntentFilter[] mWriteTagFilters;
 	IntentFilter[] mNdefExchangeFilters;
 
+	// reg_id is the local user id
 	private String reg_id;
 	// TODO From user's registration
 	private String USER_NAME = "Username";
-	private String strFromDevice;
+	private String strFromDevice = "FleetChat";
 	private FileIO fio;
 
 	public NFCTabFragment() {
@@ -86,11 +87,6 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 
 	private void initNFC() {
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
-
-		// findViewById(R.id.write_tag).setOnClickListener(mTagWriter);
-		// mNote = ((EditText) findViewById(R.id.note));
-		mNote.addTextChangedListener(mTextWatcher);
-
 		// Handle all of our received NFC intents in this activity.
 		mNfcPendingIntent = PendingIntent.getActivity(getActivity(), 0,
 				new Intent(getActivity(), getClass())
@@ -113,15 +109,20 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 
 	private void init() {
 		reg_id = MainActivity.GCM.getRegistrationId();
+		tv1 = (TextView) rootView.findViewById(R.id.nfcpush_textView2);
+		tv1.setText("");
 		btnStart = (Button) rootView
 				.findViewById(R.id.nfcpush_fragment_button1);
 		btnStart.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				enableNdefExchangeMode();
 				disableTagWriteMode();
+				if (mResumed) {
+					mNfcAdapter.enableForegroundNdefPush(getActivity(),
+							getNoteAsNdef());
+				}
 				AlertDialog.Builder dialog = new AlertDialog.Builder(
 						getActivity());
 				dialog.setTitle("Waiting...")
@@ -132,14 +133,13 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 									@Override
 									public void onClick(DialogInterface dialog,
 											int id) {
-										// TODO Auto-generated method stub
 										if (id == DialogInterface.BUTTON_POSITIVE) {
 											dialog.dismiss();
 											disableNdefExchangeMode();
 											enableTagWriteMode();
 										}
 									}
-								});
+								}).show();
 			}
 		});
 	}
@@ -153,10 +153,46 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 				.getAction())) {
 			NdefMessage[] messages = getNdefMessages(getActivity().getIntent());
 			byte[] payload = messages[0].getRecords()[0].getPayload();
-			setNoteBody(new String(payload));
+			setNFCMsg(new String(payload));
 			getActivity().setIntent(new Intent()); // Consume this intent.
 		}
 		enableNdefExchangeMode();
+	}
+	private void setNFCMsg(String body) {
+		stFromDevice = body;
+		nfcAddFriend();
+		tv1.setText("");
+		tv1.append(body);
+	}
+
+	// stFromDevice format = "FleetChat" + "regID:" + reg_id + "UserName:" +
+	// USER_NAME;
+	private void nfcAddFriend() {
+		if (stFromDevice.split("regID:")[0].equalsIgnoreCase("FleetChat")) {
+			HashMap<String, Object> item = new HashMap<String, Object>();
+			String name = stFromDevice.split("regID:")[1].split("UserName:")[1];
+			String gcmidFromOther = stFromDevice.split("regID:")[1]
+					.split("UserName:")[0];
+			String deadline = null;
+			item.put(EXTRA_NAME, name);
+			item.put(EXTRA_DATE, deadline);
+			item.put(EXTRA_GCMID, gcmidFromOther);
+
+			fio1 = new FileIO(getActivity());
+			if (fio1.addContact(item)) {
+				MainActivity.GCM.postDataAddFriend(gcmidFromOther, deadline,
+						"Annoymous");
+				Toast t = Toast.makeText(getActivity(),
+						"Friend has been added/updated successfully",
+						Toast.LENGTH_SHORT);
+				t.show();
+			} else {
+				Toast t = Toast.makeText(getActivity(),
+						"You two are friends already!", Toast.LENGTH_SHORT);
+				t.show();
+			}
+		}
+
 	}
 
 	@Override
@@ -182,29 +218,6 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		}
 	}
 
-	private TextWatcher mTextWatcher = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-				int arg3) {
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable arg0) {
-			if (mResumed) {
-				mNfcAdapter.enableForegroundNdefPush(getActivity(),
-						getNoteAsNdef());
-			}
-		}
-	};
-
 	private View.OnClickListener mTagWriter = new View.OnClickListener() {
 		@Override
 		public void onClick(View arg0) {
@@ -226,6 +239,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	};
 
 	private void promptForContent(final NdefMessage msg) {
+		Log.i("debug_ho", "promptForContent");
 		new AlertDialog.Builder(getActivity())
 				.setTitle("Replace current content?")
 				.setPositiveButton("Yes",
@@ -234,7 +248,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 							public void onClick(DialogInterface arg0, int arg1) {
 								String body = new String(msg.getRecords()[0]
 										.getPayload());
-								setNoteBody(body);
+								setNFCMsg(body);
 							}
 						})
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -245,14 +259,9 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 				}).show();
 	}
 
-	private void setNoteBody(String body) {
-		Editable text = mNote.getText();
-		text.clear();
-		text.append(body);
-	}
-
 	private NdefMessage getNoteAsNdef() {
-		byte[] textBytes = mNote.getText().toString().getBytes();
+		strToGen = "FleetChat" + "regID:" + reg_id + "UserName:" + USER_NAME;
+		byte[] textBytes = strToGen.getBytes();
 		NdefRecord textRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
 				"text/plain".getBytes(), new byte[] {}, textBytes);
 		return new NdefMessage(new NdefRecord[] { textRecord });

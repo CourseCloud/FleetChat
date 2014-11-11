@@ -126,35 +126,29 @@ public class FileIO implements FileIOConstants, GCMConstants {
 	/** Contact **/
 	/**************************************************************************/
 
-	public Boolean addContact(HashMap<String, Object> item) {
+	public boolean addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
 		Log.i("path", _context.getFilesDir() + "");
 		ArrayList<HashMap<String, Object>> list;
-		if (file.exists()) {
-			file.delete();
-			return false;
+
+		if (getContact() == null) {
+			list = new ArrayList<HashMap<String, Object>>();
 		} else {
-			if (getContact() == null) {
-				list = new ArrayList<HashMap<String, Object>>();
-			} else {
-				list = getContact();
-			}
-			list.add(item);
-			Boolean ifAddSuccess = writeObject(file, list);
-			return ifAddSuccess;
+			list = getContact();
 		}
-
+		list.add(item);
+		writeObject(file, list);
+		return true;
 	}
 
-	public Boolean addContact(String name, String date, String gcmid) {
-		HashMap<String, Object> item = new HashMap<String, Object>();
-		item.put("pic1", R.drawable.ic_launcher);
-		item.put(EXTRA_NAME, name);
-		item.put(EXTRA_GCMID, date);
-		item.put(EXTRA_DATE, gcmid);
-
-		return addContact(item);
-	}
+	/*
+	 * public Boolean addContact(String name, String date, String gcmid) {
+	 * HashMap<String, Object> item = new HashMap<String, Object>();
+	 * item.put("pic1", R.drawable.ic_launcher); item.put(EXTRA_NAME, name);
+	 * item.put(EXTRA_GCMID, date); item.put(EXTRA_DATE, gcmid);
+	 * 
+	 * return addContact(item); }
+	 */
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<HashMap<String, Object>> getContact() {
