@@ -3,7 +3,6 @@ package com.fleetchat;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;

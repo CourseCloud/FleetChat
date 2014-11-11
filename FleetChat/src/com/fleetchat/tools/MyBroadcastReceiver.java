@@ -2,17 +2,14 @@ package com.fleetchat.tools;
 
 import java.util.HashMap;
 
-import com.fleetchat.GCMIntentService;
-import com.fleetchat.R;
-import com.fleetchat.fragments.DemoFragment;
-import com.fleetchat.util.GCMConstants;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+
+import com.fleetchat.R;
+import com.fleetchat.util.GCMConstants;
 
 /**
  * Receiving push messages
@@ -20,13 +17,8 @@ import android.widget.TextView;
 public class MyBroadcastReceiver extends BroadcastReceiver implements
 		GCMConstants {
 	private static final String TAG = "MyBroadcastReceiver";
-	private TextView mTextView;
 
 	public MyBroadcastReceiver() {
-	}
-
-	public MyBroadcastReceiver(TextView textView) {
-		mTextView = textView;
 	}
 
 	String action = "";
@@ -42,7 +34,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 		// ACTION_SEND_MESSAGE
 		if (action.equals(ACTION_SEND_MESSAGE)) {
 
-			// TODO 收到訊息後，fileIO到txt檔
 			Log.w(TAG, "get ACTION_SEND_MESSAGE !!");
 
 			Log.d(TAG, intent.getStringExtra(EXTRA_GCMID));
@@ -51,8 +42,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			Log.d(TAG, intent.getStringExtra(EXTRA_DATE));
 
 			FileIO fio = new FileIO(context);
-			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID), intent.getStringExtra(EXTRA_MESSAGE),
-					false);
+			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID),
+					intent.getStringExtra(EXTRA_MESSAGE), false);
 		}
 		// ACTION_ADD_FRIEND
 		else if (action.equals(ACTION_ADD_FRIEND)) {

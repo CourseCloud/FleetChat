@@ -82,7 +82,15 @@ public class GCMIntentService extends GCMBaseIntentService implements
 			Log.e(TAG, e.toString());
 		}
 
-		// TODO notice should change title
+		try {
+			if (intent.getStringExtra(EXTRA_NAME) != null) {
+				title = intent.getStringExtra(EXTRA_NAME);
+				message = getString(R.string.gcm_add_friend);
+			}
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+
 		// notifies user
 		generateNotification(context, title, message);
 	}
