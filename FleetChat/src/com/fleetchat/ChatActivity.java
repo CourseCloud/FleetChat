@@ -97,7 +97,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 				// TODO (Xu) post message
 				MainActivity.GCM.postDataSendMessage(_contact, _contactName,
 						_etMessage.getText().toString());
-				sendChatMessage();
+				sendMessage(false, _etMessage.getText().toString());
 			}
 		});
 		// If _etMessage is empty, set _btnSend disabled.
@@ -148,8 +148,13 @@ public class ChatActivity extends Activity implements GCMConstants,
 		s = _etMessage.getText().toString();
 	}
 
+	private boolean sendMessage(Boolean side, String message) {
+		chatArrayAdapter.add(new ChatMessage(side, message));
+		_etMessage.setText("");
+		return true;
+	}
+
 	private boolean sendChatMessage() {
-		side = false;
 		chatArrayAdapter.add(new ChatMessage(side, _etMessage.getText()
 				.toString()));
 		_etMessage.setText("");
