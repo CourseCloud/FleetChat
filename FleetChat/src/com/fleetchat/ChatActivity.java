@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -43,6 +44,10 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private ChatArrayAdapter chatArrayAdapter;
 	private String _contactName;
 
+	// BroadcastReceiver
+	public static final String INTENT_NOTICE_CHAT = "com.fleetchat.INTENT_NOTICE_CHAT";
+	public static BroadcastReceiver mBroadcastReceiver;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,7 +56,6 @@ public class ChatActivity extends Activity implements GCMConstants,
 		setContentView(R.layout.chat_activity);
 		Initialize();
 		setView();
-
 	}
 
 	private void Initialize() {
@@ -97,7 +101,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 						_etMessage.getText().toString());
 
 				// view handler
-				setAdapter(getApplicationContext());
+				setAdapter();
 				_etMessage.setText("");
 				moveListViewToBottom();
 			}
@@ -123,14 +127,14 @@ public class ChatActivity extends Activity implements GCMConstants,
 			}
 		});
 
-		setAdapter(getApplicationContext());
+		setAdapter();
 	}
 
 	/**
 	 * Set/update adapter.
 	 */
-	private void setAdapter(Context context) {
-		chatArrayAdapter = new ChatArrayAdapter(context,
+	private void setAdapter() {
+		chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),
 				R.layout.activity_chat_singlemessage);
 		chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
 			@Override
@@ -171,6 +175,19 @@ public class ChatActivity extends Activity implements GCMConstants,
 
 	@Override
 	protected void onResume() {
+		mBroadcastReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (intent.getAction().equals(INTENT_NOTICE_CHAT)) {
+					// TODO "DEBUG"
+					Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
+					
+					setAdapter();
+				}
+
+			}
+		};
 
 		IntentFilter filter = new IntentFilter(INTENT_NOTICE_CHAT);
 		registerReceiver(mBroadcastReceiver, filter);
@@ -187,24 +204,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 		super.onDestroy();
 	}
 
-	public static final String INTENT_NOTICE_CHAT = "com.fleetchat.INTENT_NOTICE_CHAT";
-
-	public static BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(INTENT_NOTICE_CHAT)) {
-				// TODO "DEBUG"
-				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
-				// TODO (Ho)
-//				ChatActivity.setContent();
-			}
-
-		}
-
-		public void sendChat(Context context, Bundle bundle) {
-			Intent intent = new Intent(INTENT_NOTICE_CHAT);
-			context.sendBroadcast(intent);
-		}
-	};
+	public static void sendChat(Context context, Bundle bundle) {
+		Intent intent = new Intent(INTENT_NOTICE_CHAT);
+		context.sendBroadcast(intent);
+	}
 }
