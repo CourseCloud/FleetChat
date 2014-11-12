@@ -1,7 +1,7 @@
 package com.fleetchat.qr;
 
 import java.util.Calendar;
-
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.graphics.Bitmap;
@@ -26,7 +26,6 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
-
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.google.zxing.BarcodeFormat;
@@ -37,7 +36,7 @@ public class QRGeneratorFragment extends Fragment {
 	private ImageView ivQRgen, ivQRscan;
 	// UIs
 	private CheckBox ch1;
-	private DatePicker  dp2;
+	private DatePicker dp2;
 	private TimePicker tp;
 	private ImageView btn_generate;
 	private View rootView;
@@ -151,21 +150,6 @@ public class QRGeneratorFragment extends Fragment {
 				qrDialog.show();
 			}
 		});
-	}
-
-	private void setDatePicker1(DatePicker dp) {
-		initCalendar();
-		dp.init(year, month, day, new OnDateChangedListener() {
-
-			@Override
-			public void onDateChanged(DatePicker dp, int year, int month,
-					int day) {
-				QRGeneratorFragment.this.year = year;
-				QRGeneratorFragment.this.month = month;
-				QRGeneratorFragment.this.day = day;
-			}
-		});
-
 	}
 
 	private void setDatePicker2(DatePicker dp) {

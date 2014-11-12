@@ -28,5 +28,7 @@
     <string name="nfcpush_fragment_rb2">limited</string>
     <string name="nfcpush_fragment_ch1">Addable in limited time</string>
     <string name="nfcpush_fragment_btn">Start NFC delivery</string>
+    <string name="nfcpush_fragment_tvstatus">NFC status:</string>
+    
 
 </resources>

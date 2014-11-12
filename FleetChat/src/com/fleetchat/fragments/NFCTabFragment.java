@@ -1,18 +1,16 @@
 package com.fleetchat.fragments;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashMap;
-
-import org.w3c.dom.Text;
 
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentFilter.MalformedMimeTypeException;
+import android.graphics.Color;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -22,18 +20,18 @@ import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,13 +42,18 @@ import com.fleetchat.util.GCMConstants;
 
 public class NFCTabFragment extends Fragment implements GCMConstants {
 	private View rootView;
+	private static final int REQUEST_ENABLE_NFC = 1;
+	private static final int REQUEST_DISABLE_NFC = 2;
 	// nfc params
-	private Button btnStart;
+	private ImageView btnStart;
 	private NfcAdapter mNfcAdapter;
 	private boolean mResumed = false;
 	private boolean mWriteMode = false;
 	private TextView tv1;
+	private TextView title;
 	private Toast toast;
+	private ImageView nfcSwitch;
+	private TextView status;
 	// basic UIs
 	private RadioGroup rg;
 	private RadioButton rb1, rb2;
@@ -88,6 +91,13 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	private void initNFC() {
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(getActivity());
 		// Handle all of our received NFC intents in this activity.
+		if (mNfcAdapter == null) {
+			nfcSwitch.setEnabled(false);
+			btnStart.setEnabled(false);
+			title.setText("Your device does not support NFC");
+			title.setTextColor(Color.RED);
+			nfcSwitch.setEnabled(false);
+		}
 		mNfcPendingIntent = PendingIntent.getActivity(getActivity(), 0,
 				new Intent(getActivity(), getClass())
 						.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
@@ -109,9 +119,21 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 
 	private void init() {
 		reg_id = MainActivity.GCM.getRegistrationId();
+		title = (TextView) rootView.findViewById(R.id.nfcpush_tvTitle);
+		status = (TextView) rootView.findViewById(R.id.nfcpush_tvStatus);
+		status.setText("");
+		nfcSwitch = (ImageView) rootView.findViewById(R.id.nfcpush_switch1);
+		nfcSwitch.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				turnNFC();
+			}
+		});
 		tv1 = (TextView) rootView.findViewById(R.id.nfcpush_textView2);
 		tv1.setText("");
-		btnStart = (Button) rootView
+		btnStart = (ImageView) rootView
 				.findViewById(R.id.nfcpush_fragment_button1);
 		btnStart.setOnClickListener(new OnClickListener() {
 
@@ -157,7 +179,15 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 			getActivity().setIntent(new Intent()); // Consume this intent.
 		}
 		enableNdefExchangeMode();
+		if (mNfcAdapter.isEnabled()) {
+			status.setText("ON");
+			status.setTextColor(Color.BLUE);
+		} else {
+			status.setText("OFF");
+			status.setTextColor(Color.RED);
+		}
 	}
+
 	private void setNFCMsg(String body) {
 		stFromDevice = body;
 		nfcAddFriend();
@@ -362,6 +392,10 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		}
 
 		return false;
+	}
+
+	private void turnNFC() {
+		startActivity(new Intent("android.settings.NFC_SETTINGS"));
 	}
 
 	private void toast(String text) {

@@ -50,14 +50,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp" />
 
+            <ImageView
+                android:id="@+id/qrcode_fragment_button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/qrgenbtn" />
+
         </LinearLayout>
     </ScrollView>
-
-    <ImageView
-        android:id="@+id/qrcode_fragment_button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/qrgenbtn" />
 
 </LinearLayout>

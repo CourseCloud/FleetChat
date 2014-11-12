@@ -5,17 +5,20 @@ import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
-import com.fleet.chatbubbleexample.DiscussArrayAdapter;
-import com.fleet.chatbubbleexample.OneComment;
+import com.fleetchat.chatbubble.ChatArrayAdapter;
+import com.fleetchat.chatbubble.ChatMessage;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.FileIOConstants;
 import com.fleetchat.util.GCMConstants;
@@ -35,8 +38,9 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private String _contact = "temp";
 
 	// bubble params
-	private com.fleet.chatbubbleexample.DiscussArrayAdapter bubbleAdapter;
+	private ChatArrayAdapter chatArrayAdapter;
 	private String _contactName;
+	private boolean side = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +81,25 @@ public class ChatActivity extends Activity implements GCMConstants,
 	}
 
 	private void setView() {
-		bubbleAdapter = new DiscussArrayAdapter(getApplicationContext(),
-				R.layout.chat_activity_item_me);
+		chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),
+				R.layout.activity_chat_singlemessage);
 		_lvContent = (ListView) findViewById(R.id.chat_activity_listView1);
-		_lvContent.setAdapter(bubbleAdapter);
-		// _etContent = (EditText)
-		// findViewById(R.id.chat_activity_editText_content);
-		_etMessage = (EditText) findViewById(R.id.chat_activity_editText_message);
-		_btnSend = (Button) findViewById(R.id.chat_activity_button_send);
+		_lvContent.setAdapter(chatArrayAdapter);
+		_lvContent.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+		_etMessage = (EditText) findViewById(R.id.chat_activity_editText_msg);
+		_btnSend = (Button) findViewById(R.id.chat_activity_btn_send);
 
+		_btnSend.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				fio.addChatDetail(_contact, _etMessage.getText().toString(),
+						true);
+				// TODO (Xu) post message
+				MainActivity.GCM.postDataSendMessage(_contact, _contactName,
+						_etMessage.getText().toString());
+				sendChatMessage();
+			}
+		});
 		// If _etMessage is empty, set _btnSend disabled.
 		_etMessage.addTextChangedListener(new TextWatcher() {
 
@@ -105,25 +119,22 @@ public class ChatActivity extends Activity implements GCMConstants,
 			public void afterTextChanged(Editable s) {
 			}
 		});
-
-		// Button
-		_btnSend.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				fio.addChatDetail(_contact, _etMessage.getText().toString(),
-						true);
-				// TODO (Xu) post message
-				MainActivity.GCM.postDataSendMessage(_contact, _contactName,
-						_etMessage.getText().toString());
-				setContent();
-				_etMessage.setText("");
-
+		_etMessage.setOnKeyListener(new OnKeyListener() {
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if ((event.getAction() == KeyEvent.ACTION_DOWN)
+						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
+					return sendChatMessage();
+				}
+				return false;
 			}
 		});
-
-		setContent();
-
+		chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+			@Override
+			public void onChanged() {
+				super.onChanged();
+				_lvContent.setSelection(chatArrayAdapter.getCount() - 1);
+			}
+		});
 	}
 
 	private void setContent() {
@@ -135,24 +146,13 @@ public class ChatActivity extends Activity implements GCMConstants,
 
 		String s = "";
 		s = _etMessage.getText().toString();
-		// Read MESSAGE only
-		addBubble(s, true);
-
-		// TODO (ho) 幫你寫好了，改好addBubble 應該就可以用了
-		// if (list != null) {
-		// for (int i = 0; i < list.size(); i++) {
-		// addBubble((String) list.get(i).get(MESSAGE), (Boolean) list
-		// .get(i).get(WHO_POST));
-		// }
-		// }
-
-		// refresh
-		_lvContent.setAdapter(bubbleAdapter);
 	}
 
-	// b stands for that the bubble comes out from "right"(OtherFriend) or
-	// "left"(User)
-	private void addBubble(String s, boolean b) {
-		bubbleAdapter.add(new OneComment(b, s));
+	private boolean sendChatMessage() {
+		side = false;
+		chatArrayAdapter.add(new ChatMessage(side, _etMessage.getText()
+				.toString()));
+		_etMessage.setText("");
+		return true;
 	}
 }
