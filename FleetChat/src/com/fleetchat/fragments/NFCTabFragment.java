@@ -171,20 +171,23 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		super.onResume();
 		mResumed = true;
 		// Sticky notes received from Android
-		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getActivity().getIntent()
-				.getAction())) {
-			NdefMessage[] messages = getNdefMessages(getActivity().getIntent());
-			byte[] payload = messages[0].getRecords()[0].getPayload();
-			setNFCMsg(new String(payload));
-			getActivity().setIntent(new Intent()); // Consume this intent.
-		}
-		enableNdefExchangeMode();
-		if (mNfcAdapter.isEnabled()) {
-			status.setText("ON");
-			status.setTextColor(Color.BLUE);
-		} else {
-			status.setText("OFF");
-			status.setTextColor(Color.RED);
+		if (mNfcAdapter != null) {
+			if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getActivity()
+					.getIntent().getAction())) {
+				NdefMessage[] messages = getNdefMessages(getActivity()
+						.getIntent());
+				byte[] payload = messages[0].getRecords()[0].getPayload();
+				setNFCMsg(new String(payload));
+				getActivity().setIntent(new Intent()); // Consume this intent.
+			}
+			enableNdefExchangeMode();
+			if (mNfcAdapter.isEnabled()) {
+				status.setText("ON");
+				status.setTextColor(Color.BLUE);
+			} else {
+				status.setText("OFF");
+				status.setTextColor(Color.RED);
+			}
 		}
 	}
 
@@ -230,22 +233,29 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	public void onPause() {
 		super.onPause();
 		mResumed = false;
-		mNfcAdapter.disableForegroundNdefPush(getActivity());
+		if (mNfcAdapter != null) {
+			mNfcAdapter.disableForegroundNdefPush(getActivity());
+		}
 	}
 
 	protected void onNewIntent(Intent intent) {
 		// NDEF exchange mode
-		if (!mWriteMode
-				&& NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-			NdefMessage[] msgs = getNdefMessages(intent);
-			promptForContent(msgs[0]);
-		}
+		if (mNfcAdapter != null) {
+			if (!mWriteMode
+					&& NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent
+							.getAction())) {
+				NdefMessage[] msgs = getNdefMessages(intent);
+				promptForContent(msgs[0]);
+			}
 
-		// Tag writing mode
-		if (mWriteMode
-				&& NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-			Tag detectedTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-			writeTag(getNoteAsNdef(), detectedTag);
+			// Tag writing mode
+			if (mWriteMode
+					&& NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent
+							.getAction())) {
+				Tag detectedTag = intent
+						.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+				writeTag(getNoteAsNdef(), detectedTag);
+			}
 		}
 	}
 

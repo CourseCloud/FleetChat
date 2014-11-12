@@ -124,6 +124,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 		});
 
 		setAdapter(getApplicationContext());
+		moveListViewToBottom();
 	}
 
 	/**
@@ -141,6 +142,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 		});
 		setContent();
 		_lvContent.setAdapter(chatArrayAdapter);
+		chatArrayAdapter.notifyDataSetChanged();
+		_lvContent.invalidateViews();
 	}
 
 	public void setContent() {
@@ -189,7 +192,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 
 	public static final String INTENT_NOTICE_CHAT = "com.fleetchat.INTENT_NOTICE_CHAT";
 
-	public static BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+	public BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -197,7 +200,9 @@ public class ChatActivity extends Activity implements GCMConstants,
 				// TODO "DEBUG"
 				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
 				// TODO (Ho)
-//				ChatActivity.setContent();
+				String message = intent.getStringExtra(EXTRA_MESSAGE);
+				addBubble(true, message);
+				setAdapter(getApplicationContext());
 			}
 
 		}
