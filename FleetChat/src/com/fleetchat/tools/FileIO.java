@@ -127,7 +127,7 @@ public class FileIO implements FileIOConstants, GCMConstants {
 	/** Contact **/
 	/**************************************************************************/
 
-	public boolean addContact(HashMap<String, Object> item) {
+	public void addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
 		Log.i("path", _context.getFilesDir() + "");
 		ArrayList<HashMap<String, Object>> list;
@@ -139,21 +139,20 @@ public class FileIO implements FileIOConstants, GCMConstants {
 		}
 		list.add(item);
 		writeObject(file, list);
-		return true;
 	}
 
-	// TODO (Ho) use it
 	public Boolean checkContactExist(String gcmid) {
 
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
 
 		list = getContact();
-		Log.d(TAG, "checkContactExist = " + list);
+		Log.w(TAG, "checkContactExist = " + list);
 
 		// Read MESSAGE only
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				if (list.get(i).get(EXTRA_GCMID).equals(gcmid)) {
+					Log.d(TAG, i + ". found exised : " + list.get(i));
 					return true;
 				}
 			}

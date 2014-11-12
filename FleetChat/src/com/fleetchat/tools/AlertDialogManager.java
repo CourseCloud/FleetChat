@@ -62,8 +62,7 @@ public class AlertDialogManager {
 		final EditText input = new EditText(context);
 		input.setLayoutParams(lp);
 		input.setHint("Type here");
-		input.setText(context.getSharedPreferences(MainActivity.PREF,
-				Context.MODE_PRIVATE).getString(MainActivity.PREF_NAME, ""));
+		input.setText(MainActivity.getUserName(context));
 
 		final Button btn = new Button(context);
 		btn.setLayoutParams(lp);

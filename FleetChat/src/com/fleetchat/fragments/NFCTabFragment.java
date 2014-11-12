@@ -209,7 +209,8 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 			item.put(EXTRA_GCMID, gcmidFromOther);
 
 			fio1 = new FileIO(getActivity());
-			if (fio1.addContact(item)) {
+			if (fio1.checkContactExist(gcmidFromOther)) {
+				fio1.addContact(item);
 				MainActivity.GCM.postDataAddFriend(gcmidFromOther, deadline,
 						"Annoymous");
 				Toast t = Toast.makeText(getActivity(),

@@ -173,4 +173,8 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 	}
 
+	public static String getUserName(Context context) {
+		return context.getSharedPreferences(MainActivity.PREF,
+				Context.MODE_PRIVATE).getString(MainActivity.PREF_NAME, "");
+	}
 }

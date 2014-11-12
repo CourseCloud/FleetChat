@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.fleetchat.ChatActivity;
 import com.fleetchat.R;
 import com.fleetchat.util.GCMConstants;
 
@@ -46,6 +45,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID),
 					intent.getStringExtra(EXTRA_MESSAGE), false);
 			
+			//TODO sendChat update
+//			ChatBroadcastReceiver.sendChat(context, intent.getExtras());
+	
 		}
 		// ACTION_ADD_FRIEND
 		else if (action.equals(ACTION_ADD_FRIEND)) {

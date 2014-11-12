@@ -5,18 +5,21 @@ import java.util.HashMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+
 import com.fleetchat.chatbubble.ChatArrayAdapter;
 import com.fleetchat.chatbubble.ChatMessage;
 import com.fleetchat.tools.FileIO;
@@ -28,7 +31,6 @@ public class ChatActivity extends Activity implements GCMConstants,
 		FileIOConstants {
 	private static final String TAG = "ChatActivity";
 	// UI
-	private EditText _etContent;
 	private EditText _etMessage;
 	private Button _btnSend;
 	private ListView _lvContent;
@@ -40,14 +42,13 @@ public class ChatActivity extends Activity implements GCMConstants,
 	// bubble params
 	private ChatArrayAdapter chatArrayAdapter;
 	private String _contactName;
-	private boolean side = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		fio = new FileIO(getApplicationContext());
 
-		setContentView(R.layout.chat_activity2);
+		setContentView(R.layout.chat_activity);
 		Initialize();
 		setView();
 
@@ -81,10 +82,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 	}
 
 	private void setView() {
-		chatArrayAdapter = new ChatArrayAdapter(getApplicationContext(),
-				R.layout.activity_chat_singlemessage);
 		_lvContent = (ListView) findViewById(R.id.chat_activity_listView1);
-		_lvContent.setAdapter(chatArrayAdapter);
 		_lvContent.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		_etMessage = (EditText) findViewById(R.id.chat_activity_editText_msg);
 		_btnSend = (Button) findViewById(R.id.chat_activity_btn_send);
@@ -92,14 +90,19 @@ public class ChatActivity extends Activity implements GCMConstants,
 		_btnSend.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				// message handler
 				fio.addChatDetail(_contact, _etMessage.getText().toString(),
 						true);
-				// TODO (Xu) post message
 				MainActivity.GCM.postDataSendMessage(_contact, _contactName,
 						_etMessage.getText().toString());
-				sendMessage(false, _etMessage.getText().toString());
+
+				// view handler
+				setAdapter(getApplicationContext());
+				_etMessage.setText("");
+				moveListViewToBottom();
 			}
 		});
+
 		// If _etMessage is empty, set _btnSend disabled.
 		_etMessage.addTextChangedListener(new TextWatcher() {
 
@@ -119,45 +122,89 @@ public class ChatActivity extends Activity implements GCMConstants,
 			public void afterTextChanged(Editable s) {
 			}
 		});
-		_etMessage.setOnKeyListener(new OnKeyListener() {
-			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				if ((event.getAction() == KeyEvent.ACTION_DOWN)
-						&& (keyCode == KeyEvent.KEYCODE_ENTER)) {
-					return sendChatMessage();
-				}
-				return false;
-			}
-		});
+
+		setAdapter(getApplicationContext());
+	}
+
+	/**
+	 * Set/update adapter.
+	 */
+	private void setAdapter(Context context) {
+		chatArrayAdapter = new ChatArrayAdapter(context,
+				R.layout.activity_chat_singlemessage);
 		chatArrayAdapter.registerDataSetObserver(new DataSetObserver() {
 			@Override
 			public void onChanged() {
 				super.onChanged();
-				_lvContent.setSelection(chatArrayAdapter.getCount() - 1);
+				moveListViewToBottom();
 			}
 		});
+		setContent();
+		_lvContent.setAdapter(chatArrayAdapter);
 	}
 
-	private void setContent() {
+	public void setContent() {
+		// Get data.
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
-
 		list = fio.getChatDetail(_contact);
 		// TODO "DEBUG"
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
 
-		String s = "";
-		s = _etMessage.getText().toString();
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				addBubble((Boolean) list.get(i).get(WHO_POST), (String) list
+						.get(i).get(MESSAGE));
+			}
+		}
+
+		// Refresh View.
+		_lvContent.setAdapter(chatArrayAdapter);
 	}
 
-	private boolean sendMessage(Boolean side, String message) {
-		chatArrayAdapter.add(new ChatMessage(side, message));
-		_etMessage.setText("");
-		return true;
+	private void addBubble(Boolean side, String message) {
+		chatArrayAdapter.add(new ChatMessage(!side, message));
 	}
 
-	private boolean sendChatMessage() {
-		chatArrayAdapter.add(new ChatMessage(side, _etMessage.getText()
-				.toString()));
-		_etMessage.setText("");
-		return true;
+	private void moveListViewToBottom() {
+		_lvContent.setSelection(chatArrayAdapter.getCount() - 1);
 	}
+
+	@Override
+	protected void onResume() {
+
+		IntentFilter filter = new IntentFilter(INTENT_NOTICE_CHAT);
+		registerReceiver(mBroadcastReceiver, filter);
+		super.onResume();
+	}
+
+	@Override
+	protected void onDestroy() {
+		try {
+			unregisterReceiver(mBroadcastReceiver);
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+		super.onDestroy();
+	}
+
+	public static final String INTENT_NOTICE_CHAT = "com.fleetchat.INTENT_NOTICE_CHAT";
+
+	public static BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(INTENT_NOTICE_CHAT)) {
+				// TODO "DEBUG"
+				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
+				// TODO (Ho)
+//				ChatActivity.setContent();
+			}
+
+		}
+
+		public void sendChat(Context context, Bundle bundle) {
+			Intent intent = new Intent(INTENT_NOTICE_CHAT);
+			context.sendBroadcast(intent);
+		}
+	};
 }

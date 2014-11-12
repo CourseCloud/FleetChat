@@ -16,23 +16,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
+import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.GCMConstants;
-import com.fleetchat.util.TimeUtilities;
 
-// TODO (Ho) Need to fix it.
 public class QRScannerFragment extends Fragment implements GCMConstants {
 	// download package
 	private static final String PACKAGE = "com.google.zxing.client.android";
@@ -73,7 +66,8 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 
 	private void init() {
 		tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
-		btScan = (ImageView) rootView.findViewById(R.id.qrcode_fragment2_Scanner);
+		btScan = (ImageView) rootView
+				.findViewById(R.id.qrcode_fragment2_Scanner);
 		btScan.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -112,31 +106,28 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 					item.put(EXTRA_GCMID, gcmidFromOther);
 
 					fio = new FileIO(getActivity());
-					if (fio.addContact(item)) {
+					if (!fio.checkContactExist(gcmidFromOther)) {
+						fio.addContact(item);
 						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
 								deadline, name);
-						Toast t = Toast.makeText(getActivity(),
-								"Friend has been added/updated successfully",
-								Toast.LENGTH_SHORT);
-						t.show();
 						message = "Content: " + contents + "\nFormat: "
 								+ format;
+
+						new AlertDialogManager().showMessageDialog(
+								getActivity(), "Succes",
+								"Friend has been added/updated!");
 					} else {
-						Toast t = Toast.makeText(getActivity(),
-								"You two are friends already!",
-								Toast.LENGTH_SHORT);
-						t.show();
+
+						new AlertDialogManager().showMessageDialog(
+								getActivity(), "Fail",
+								"You two are friends already!");
 					}
 
 				} else {
-
 					message = null;
-					AlertDialog.Builder dialog = new AlertDialog.Builder(
-							getActivity());
-					dialog.setTitle("Warning")
-							.setMessage(
-									"This format is wrong, please try to scan QRcode!")
-							.setPositiveButton("OK", null).show();
+					new AlertDialogManager().showMessageDialog(getActivity(),
+							"Warning",
+							"This format is wrong, please try to scan QRcode!");
 				}
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				message = "Scan was Cancelled!";

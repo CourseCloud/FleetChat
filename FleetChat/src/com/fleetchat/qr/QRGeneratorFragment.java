@@ -128,6 +128,7 @@ public class QRGeneratorFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				USER_NAME = MainActivity.getUserName(getActivity());
 				strToGen = "FleetChat" + "duration:" + "expiration:"
 						+ chooseDate2 + "-" + chooseTime2 + "" + "regID:"
 						+ reg_id + "UserName:" + USER_NAME;

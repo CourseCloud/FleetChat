@@ -8,6 +8,7 @@ public interface GCMConstants {
      */
     public static final String DISPLAY_MESSAGE_ACTION =
             "com.fleetchat.DISPLAY_MESSAGE";
+    
 	
 	public static final String EXTRA_TITLE = "EXTRA_TITLE";
 	public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
