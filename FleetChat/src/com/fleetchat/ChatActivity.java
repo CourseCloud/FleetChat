@@ -2,6 +2,7 @@ package com.fleetchat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -142,8 +143,6 @@ public class ChatActivity extends Activity implements GCMConstants,
 		});
 		setContent();
 		_lvContent.setAdapter(chatArrayAdapter);
-		chatArrayAdapter.notifyDataSetChanged();
-		_lvContent.invalidateViews();
 	}
 
 	public void setContent() {
@@ -161,6 +160,8 @@ public class ChatActivity extends Activity implements GCMConstants,
 		}
 
 		// Refresh View.
+		chatArrayAdapter.clear();
+		chatArrayAdapter.addAll(list);
 		_lvContent.setAdapter(chatArrayAdapter);
 	}
 
@@ -200,16 +201,18 @@ public class ChatActivity extends Activity implements GCMConstants,
 				// TODO "DEBUG"
 				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
 				// TODO (Ho)
-				String message = intent.getStringExtra(EXTRA_MESSAGE);
-				addBubble(true, message);
-				setAdapter(getApplicationContext());
+				String msg = intent.getStringExtra(EXTRA_MESSAGE);
+				addBubble(true, msg);
+				setAdapter(context);
+				moveListViewToBottom();
 			}
 
 		}
-
-		public void sendChat(Context context, Bundle bundle) {
-			Intent intent = new Intent(INTENT_NOTICE_CHAT);
-			context.sendBroadcast(intent);
-		}
 	};
+
+	public static void sendChat(Context context, Bundle bundle) {
+		Intent intent = new Intent(INTENT_NOTICE_CHAT);
+		context.sendBroadcast(intent);
+	}
+
 }
