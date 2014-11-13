@@ -154,11 +154,10 @@ public class ChatActivity extends Activity implements GCMConstants,
 		// TODO "DEBUG"
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
 		// TODO (Xu)get Name from the fio
-		String name = "";
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				addBubble((Boolean) list.get(i).get(WHO_POST), (String) list
-						.get(i).get(MESSAGE), name, timeCreater((String) list
+						.get(i).get(MESSAGE), _contactName, timeCreater((String) list
 						.get(i).get(TIME)));
 			}
 		}

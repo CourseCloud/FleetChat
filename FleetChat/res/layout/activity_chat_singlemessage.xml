@@ -12,9 +12,12 @@
             android:id="@+id/bubble_client_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|left"
+            android:layout_gravity="bottom|left"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="10dp"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/bubble_usr_time"
@@ -22,7 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/singleMessage"
@@ -40,15 +44,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|left"
             android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="10dp" />
 
         <TextView
             android:id="@+id/bubble_usr_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
+            android:layout_marginRight="5dp"
             android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12dp" />
 
     </LinearLayout>
 

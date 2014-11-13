@@ -62,12 +62,14 @@ public class ChatArrayAdapter extends ArrayAdapter {
 		chatText.setText(chatMessageObj.message);
 		chatText.setBackgroundResource(chatMessageObj.left ? R.drawable.bubble_a
 				: R.drawable.bubble_b);
-		userName.setText(chatMessageObj.left ? "" : "Me  ");
+		userName.setText(chatMessageObj.left ? "" : "Me");
 		userName.setTextColor(Color.BLACK);
 		userTime.setText(chatMessageObj.left ? "" : chatMessageObj.time);
 		userTime.setTextColor(Color.BLACK);
 		clientName.setText(chatMessageObj.left ? chatMessageObj.user : "");
 		clientTime.setText(chatMessageObj.left ? chatMessageObj.time : "");
+		clientName.setTextColor(Color.BLACK);
+		clientTime.setTextColor(Color.BLACK);
 		singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT
 				: Gravity.RIGHT);
 		return row;
