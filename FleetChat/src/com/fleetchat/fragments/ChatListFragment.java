@@ -108,8 +108,9 @@ public class ChatListFragment extends Fragment {
 		for (int i = 0; i < chatList.length; i++) {
 			HashMap<String, Object> item = new HashMap<String, Object>();
 			item.put(IMAGE, R.drawable.head);
-			item.put(NAME, chatList[i]);
-			item.put(CONTENT, "CONTENTddddddddddddd");
+			//	TODO [Check] Is it need to fix?
+			item.put(NAME, fio.getContactName(chatList[i]));
+			item.put(CONTENT, fio.getLastChatDetail(chatList[i]));
 			item.put(TIME, fio.getChatDetailModifiedTime(chatList[i]));
 			list.add(item);
 		}
@@ -124,4 +125,12 @@ public class ChatListFragment extends Fragment {
 
 		_listview.setAdapter(simpleAdapter);
 	}
+
+	@Override
+	public void onResume() {
+		setAdatper();
+		super.onResume();
+	}
+	
+	
 }

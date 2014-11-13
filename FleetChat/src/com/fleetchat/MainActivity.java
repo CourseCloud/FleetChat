@@ -68,7 +68,6 @@ public class MainActivity extends FragmentActivity {
 					tab.setIcon(R.drawable.qrnewclick);
 					break;
 				case 4:
-					// TODO (Ho,Xu) Need to invisiable it, if phone no NFC.
 					fragment = new NFCTabFragment();
 					tab.setIcon(R.drawable.nfcclick);
 					break;
@@ -108,7 +107,6 @@ public class MainActivity extends FragmentActivity {
 					tab.setIcon(R.drawable.qrnew);
 					break;
 				case 4:
-					// TODO (Ho,Xu) Need to invisiable it, if phone no NFC.
 					tab.setIcon(R.drawable.nfc);
 					break;
 				}
@@ -151,8 +149,6 @@ public class MainActivity extends FragmentActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			//TODO "DEBUG"
-			Log.d("DEBUG", "GCM.getRegistrationId()" + GCM.getRegistrationId());
 			adm.showEnterNameDialog(MainActivity.this);
 			return true;
 		}

@@ -160,6 +160,25 @@ public class FileIO implements FileIOConstants, GCMConstants {
 		return false;
 	}
 
+	public String getContactName(String gcmid) {
+
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+
+		list = getContact();
+		Log.w(TAG, "checkContactExist = " + list);
+
+		// Read MESSAGE only
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).get(EXTRA_GCMID).equals(gcmid)) {
+					Log.d(TAG, i + ". found exised : " + list.get(i));
+					return (String) list.get(i).get(EXTRA_NAME);
+				}
+			}
+		}
+		return "";
+	}
+
 	/*
 	 * public Boolean addContact(String name, String date, String gcmid) {
 	 * HashMap<String, Object> item = new HashMap<String, Object>();
@@ -198,6 +217,20 @@ public class FileIO implements FileIOConstants, GCMConstants {
 			list.add(item);
 		}
 		writeObject(file, list);
+	}
+
+	public String getLastChatDetail(String filename) {
+		ArrayList<HashMap<String, Object>> list;
+		if (getChatDetail(filename) == null) {
+			list = new ArrayList<HashMap<String, Object>>();
+		} else {
+			list = getChatDetail(filename);
+		}
+
+		if (list.isEmpty()) {
+			return "";
+		}
+		return (String) list.get(list.size() - 1).get(MESSAGE);
 	}
 
 	public void addChatDetail(String filename, String message, boolean myPost) {

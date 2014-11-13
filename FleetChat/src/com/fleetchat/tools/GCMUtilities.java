@@ -37,11 +37,10 @@ public class GCMUtilities implements GCMConstants {
 
 		regisGCM();
 		new Handler().postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				String checkRegId = getRegistrationId();
-				// TODO "DEBUG"
 				Log.d(TAG, "checkRegId = " + checkRegId);
 			}
 		}, 1000);
@@ -129,9 +128,6 @@ public class GCMUtilities implements GCMConstants {
 						msg.addData(EXTRA_NAME, myName);
 						msg.addData(EXTRA_DATE,
 								TimeUtilities.getTimeyyyyMMddhhmmss());
-
-						// TODO "DEBUG"
-						Log.e("DEBUG", "getRegistrationId() =" + myGCMID);
 						msg.addData(EXTRA_GCMID, myGCMID);
 						msg.addData(EXTRA_QR_DEADLINE_TIME, qrDeadlineTime);
 
