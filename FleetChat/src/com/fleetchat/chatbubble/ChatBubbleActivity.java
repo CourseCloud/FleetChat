@@ -70,8 +70,8 @@ public class ChatBubbleActivity extends Activity {
 	}
 
 	private boolean sendChatMessage() {
-		chatArrayAdapter.add(new ChatMessage(side, chatText.getText()
-				.toString()));
+//		chatArrayAdapter.add(new ChatMessage(side, chatText.getText()
+//				.toString()));
 		chatText.setText("");
 		side = !side;
 		return true;

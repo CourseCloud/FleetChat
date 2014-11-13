@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,10 @@ import com.fleetchat.R;
 
 public class ChatArrayAdapter extends ArrayAdapter {
 	private TextView chatText;
+	private TextView userName;
+	private TextView userTime;
+	private TextView clientName;
+	private TextView clientTime;
 	private List chatMessageList = new ArrayList();
 	private LinearLayout singleMessageContainer;
 
@@ -50,9 +55,19 @@ public class ChatArrayAdapter extends ArrayAdapter {
 				.findViewById(R.id.singleMessageContainer);
 		ChatMessage chatMessageObj = getItem(position);
 		chatText = (TextView) row.findViewById(R.id.singleMessage);
+		userName = (TextView) row.findViewById(R.id.bubble_usr_name);
+		userTime = (TextView) row.findViewById(R.id.bubble_usr_time);
+		clientName = (TextView) row.findViewById(R.id.bubble_client_name);
+		clientTime = (TextView) row.findViewById(R.id.bubble_client_time);
 		chatText.setText(chatMessageObj.message);
 		chatText.setBackgroundResource(chatMessageObj.left ? R.drawable.bubble_a
 				: R.drawable.bubble_b);
+		userName.setText(chatMessageObj.left ? "" : "Me  ");
+		userName.setTextColor(Color.BLACK);
+		userTime.setText(chatMessageObj.left ? "" : chatMessageObj.time);
+		userTime.setTextColor(Color.BLACK);
+		clientName.setText(chatMessageObj.left ? chatMessageObj.user : "");
+		clientTime.setText(chatMessageObj.left ? chatMessageObj.time : "");
 		singleMessageContainer.setGravity(chatMessageObj.left ? Gravity.LEFT
 				: Gravity.RIGHT);
 		return row;

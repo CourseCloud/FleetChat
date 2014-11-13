@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/bubble_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/qrcode_fragment_dialog_title"
@@ -22,7 +22,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/bubble_user_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/qrcode_fragment_dialog_date2"

@@ -3,6 +3,7 @@ package com.fleetchat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -27,6 +28,7 @@ import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.FileIOConstants;
 import com.fleetchat.util.GCMConstants;
 import com.fleetchat.util.StringUtilities;
+import com.fleetchat.util.TimeUtilities;
 
 public class ChatActivity extends Activity implements GCMConstants,
 		FileIOConstants {
@@ -151,22 +153,25 @@ public class ChatActivity extends Activity implements GCMConstants,
 		list = fio.getChatDetail(_contact);
 		// TODO "DEBUG"
 		Log.d("DEBUG", "fio.getChatDetail(_contact) = " + list);
-
+		// TODO (Xu)get Name from the fio
+		String name = "";
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				addBubble((Boolean) list.get(i).get(WHO_POST), (String) list
-						.get(i).get(MESSAGE));
+						.get(i).get(MESSAGE), name, timeCreater((String) list
+						.get(i).get(TIME)));
 			}
 		}
-
+		;
 		// Refresh View.
 		chatArrayAdapter.clear();
 		chatArrayAdapter.addAll(list);
 		_lvContent.setAdapter(chatArrayAdapter);
 	}
 
-	private void addBubble(Boolean side, String message) {
-		chatArrayAdapter.add(new ChatMessage(!side, message));
+	private void addBubble(Boolean side, String message, String user,
+			String time) {
+		chatArrayAdapter.add(new ChatMessage(!side, message, user, time));
 	}
 
 	private void moveListViewToBottom() {
@@ -200,9 +205,10 @@ public class ChatActivity extends Activity implements GCMConstants,
 			if (intent.getAction().equals(INTENT_NOTICE_CHAT)) {
 				// TODO "DEBUG"
 				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
-				// TODO (Ho)
+				String user = intent.getStringExtra(EXTRA_NAME);
 				String msg = intent.getStringExtra(EXTRA_MESSAGE);
-				addBubble(true, msg);
+				String time = timeCreater(TimeUtilities.getTimeyyyyMMddhhmmss());
+				addBubble(true, msg, user, time);
 				setAdapter(context);
 				moveListViewToBottom();
 			}
@@ -215,4 +221,11 @@ public class ChatActivity extends Activity implements GCMConstants,
 		context.sendBroadcast(intent);
 	}
 
+	// change time string to date format
+	private String timeCreater(String time) {
+		String timeAfterchange;
+		timeAfterchange = time.substring(4, 6) + "/" + time.substring(6, 8)
+				+ " " + time.substring(8, 10) + ":" + time.substring(10, 12);
+		return timeAfterchange;
+	}
 }

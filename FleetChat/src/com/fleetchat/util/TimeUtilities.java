@@ -30,8 +30,8 @@ public class TimeUtilities {
 	 * 
 	 * @return ex. 20141105181533
 	 */
-	public static String getTimeyyyyMMddhhmmss(Date d) {
-		return (String) DateFormat.format("yyyyMMddhhmmss", d);
+	public static String getTimeyyyyMMddHHmmss(Date d) {
+		return (String) DateFormat.format("yyyyMMddHHmmss", d);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class TimeUtilities {
 	 * @return ex. 20141105181533
 	 */
 	public static String getTimeyyyyMMddhhmmss() {
-		return (String) DateFormat.format("yyyyMMddhhmmss", new Date());
+		return (String) DateFormat.format("yyyyMMddHHmmss", new Date());
 	}
 
 }
