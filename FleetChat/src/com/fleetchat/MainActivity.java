@@ -151,7 +151,8 @@ public class MainActivity extends FragmentActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-
+			//TODO "DEBUG"
+			Log.d("DEBUG", "GCM.getRegistrationId()" + GCM.getRegistrationId());
 			adm.showEnterNameDialog(MainActivity.this);
 			return true;
 		}

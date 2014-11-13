@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.util.Log;
 
 import com.fleetchat.GCMIntentService;
@@ -33,6 +34,32 @@ public class GCMUtilities implements GCMConstants {
 		GCMRegistrar.checkManifest(context);
 
 		receiver = new MyBroadcastReceiver();
+
+		regisGCM();
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				String checkRegId = getRegistrationId();
+				// TODO "DEBUG"
+				Log.d(TAG, "checkRegId = " + checkRegId);
+			}
+		}, 1000);
+	}
+
+	private void regisGCM() {
+		if (GCMRegistrar.getRegistrationId(_context).equals("")) {
+			Log.d(TAG, "GCMRegistrar.register");
+			GCMRegistrar.register(_context, CommonUtilities.SENDER_ID);
+		}
+	}
+
+	/**
+	 * Get GCM registration id
+	 */
+	public String getRegistrationId() {
+		regisGCM();
+		return GCMRegistrar.getRegistrationId(_context);
 	}
 
 	public void onResume() {
@@ -137,17 +164,6 @@ public class GCMUtilities implements GCMConstants {
 		List<String> regIds = new ArrayList<String>();
 		regIds.add(friendRegID);
 		postDataAddFriends(regIds, qrDeadlineTime, myName);
-	}
-
-	/**
-	 * Get GCM registration id
-	 */
-	public String getRegistrationId() {
-		if (GCMRegistrar.getRegistrationId(_context).equals("")) {
-			Log.d(TAG, "GCMRegistrar.register");
-			GCMRegistrar.register(_context, CommonUtilities.SENDER_ID);
-		}
-		return GCMRegistrar.getRegistrationId(_context);
 	}
 
 }
