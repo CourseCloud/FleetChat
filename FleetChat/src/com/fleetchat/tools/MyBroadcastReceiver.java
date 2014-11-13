@@ -46,7 +46,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID),
 					intent.getStringExtra(EXTRA_MESSAGE), false);
 
-			// TODO sendChat update
+			// SendChat update
 			ChatActivity.sendChat(context, intent.getExtras());
 
 		}
@@ -57,6 +57,11 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			HashMap<String, Object> item = new HashMap<String, Object>();
 			item.put("pic1", R.drawable.ic_launcher);
 			item.put(EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
+
+			// TODO "DEBUG"
+			Log.e("DEBUG",
+					"intent.getStringExtra(EXTRA_GCMID) = "
+							+ intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_GCMID, intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_DATE, intent.getStringExtra(EXTRA_DATE));
 

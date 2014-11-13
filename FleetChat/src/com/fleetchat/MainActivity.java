@@ -1,5 +1,7 @@
 package com.fleetchat;
 
+import java.util.Date;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.content.Context;
@@ -18,6 +20,7 @@ import com.fleetchat.fragments.NFCTabFragment;
 import com.fleetchat.fragments.QRTabFragment;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.GCMUtilities;
+import com.fleetchat.util.TimeUtilities;
 
 public class MainActivity extends FragmentActivity {
 
@@ -148,6 +151,7 @@ public class MainActivity extends FragmentActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+
 			adm.showEnterNameDialog(MainActivity.this);
 			return true;
 		}

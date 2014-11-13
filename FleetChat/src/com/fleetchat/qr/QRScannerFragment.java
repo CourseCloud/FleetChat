@@ -25,10 +25,13 @@ import com.fleetchat.R;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 
 public class QRScannerFragment extends Fragment implements GCMConstants {
 	// download package
 	private static final String PACKAGE = "com.google.zxing.client.android";
+
+	private static final String TAG = "QRScannerFragment";
 
 	// UIs
 	private TextView tvMessage;
@@ -94,6 +97,9 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 				if (format.equalsIgnoreCase("QR_CODE")
 						&& contents.split("duration:")[0]
 								.equalsIgnoreCase("FleetChat")) {
+
+					Log.d(TAG, "contents = " + contents);
+
 					HashMap<String, Object> item = new HashMap<String, Object>();
 					String name = contents.split("regID:")[1]
 							.split("UserName:")[1];
@@ -106,6 +112,7 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 					item.put(EXTRA_GCMID, gcmidFromOther);
 
 					fio = new FileIO(getActivity());
+					// TODO (ho) test it, fio.checkContactExist(gcmidFromOther)
 					if (!fio.checkContactExist(gcmidFromOther)) {
 						fio.addContact(item);
 
@@ -117,13 +124,15 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 
 						new AlertDialogManager().showMessageDialog(
 								getActivity(), "Succes",
-								"Friend has been added/updated!");
+								"Friend has been added/updated! \n" + message);
 					} else {
 
 						new AlertDialogManager().showMessageDialog(
 								getActivity(), "Fail",
 								"You two are friends already!");
 					}
+					// TODO need add check that over deadline time.
+					// TimeUtilities.isNowOverTime(deadline);
 
 				} else {
 					message = null;

@@ -89,6 +89,7 @@ public class GCMUtilities implements GCMConstants {
 	public void postDataAddFriends(final List<String> friendRegIDs,
 			final String qrDeadlineTime, final String myName) {
 		final Sender sender = new Sender(CommonUtilities.GOOGLE_API_KEY);
+		final String myGCMID = getRegistrationId();
 
 		new Thread(new Runnable() {
 
@@ -101,7 +102,10 @@ public class GCMUtilities implements GCMConstants {
 						msg.addData(EXTRA_NAME, myName);
 						msg.addData(EXTRA_DATE,
 								TimeUtilities.getTimeyyyyMMddhhmmss());
-						msg.addData(EXTRA_GCMID, getRegistrationId());
+
+						// TODO "DEBUG"
+						Log.e("DEBUG", "getRegistrationId() =" + myGCMID);
+						msg.addData(EXTRA_GCMID, myGCMID);
 						msg.addData(EXTRA_QR_DEADLINE_TIME, qrDeadlineTime);
 
 						MulticastResult MR = sender.sendNoRetry(msg.build(),
