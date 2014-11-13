@@ -45,10 +45,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			FileIO fio = new FileIO(context);
 			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID),
 					intent.getStringExtra(EXTRA_MESSAGE), false);
-			
-			//TODO sendChat update
+
+			// TODO sendChat update
 			ChatActivity.sendChat(context, intent.getExtras());
-	
+
 		}
 		// ACTION_ADD_FRIEND
 		else if (action.equals(ACTION_ADD_FRIEND)) {
@@ -59,6 +59,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			item.put(EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
 			item.put(EXTRA_GCMID, intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_DATE, intent.getStringExtra(EXTRA_DATE));
+
+			Log.d(TAG, intent.getStringExtra(EXTRA_QR_DEADLINE_TIME));
 
 			FileIO fio = new FileIO(context);
 			fio.addContact(item);

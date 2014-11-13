@@ -108,8 +108,10 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 					fio = new FileIO(getActivity());
 					if (!fio.checkContactExist(gcmidFromOther)) {
 						fio.addContact(item);
+
+						String myName = MainActivity.getUserName(getActivity());
 						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
-								deadline, name);
+								deadline, myName);
 						message = "Content: " + contents + "\nFormat: "
 								+ format;
 
