@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.renderscript.Type;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.fleetchat.MainActivity;
 import com.fleetchat.R;
@@ -53,16 +56,29 @@ public class AlertDialogManager {
 		final AlertDialog alertDialog = new AlertDialog.Builder(context)
 				.create();
 		alertDialog.setCancelable(false);
-		alertDialog.setTitle("Enter Your Name");
+		alertDialog.setTitle("Quick registration on FleetChat");
 
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				LinearLayout.LayoutParams.MATCH_PARENT);
+		final TextView input11 = new TextView(context);
+		input11.setLayoutParams(lp);
+		input11.setText("Your Name: ");
 
-		final EditText input = new EditText(context);
-		input.setLayoutParams(lp);
-		input.setHint("Type here");
-		input.setText(MainActivity.getUserName(context));
+		final EditText input12 = new EditText(context);
+		input12.setLayoutParams(lp);
+		input12.setHint("Type name here");
+		input12.setText(MainActivity.getUserName(context));
+
+		final TextView input21 = new TextView(context);
+		input21.setLayoutParams(lp);
+		input21.setText("Your Email: ");
+
+		final EditText input22 = new EditText(context);
+		input22.setLayoutParams(lp);
+		input22.setHint("Type email here");
+		input22.setInputType(InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
+		input22.setText(MainActivity.getUserName(context));
 
 		final Button btn = new Button(context);
 		btn.setLayoutParams(lp);
@@ -71,11 +87,14 @@ public class AlertDialogManager {
 
 			@Override
 			public void onClick(View v) {
-				if (!input.getText().toString().trim().isEmpty()) {
+				if (!input12.getText().toString().trim().isEmpty()
+						&& !input22.getText().toString().trim().isEmpty()) {
 					SharedPreferences sp = context.getSharedPreferences(
 							MainActivity.PREF, Context.MODE_PRIVATE);
 					SharedPreferences.Editor se = sp.edit();
-					se.putString(MainActivity.PREF_NAME, input.getText()
+					se.putString(MainActivity.PREF_NAME, input12.getText()
+							.toString().trim());
+					se.putString(MainActivity.PREF_EMAIL, input22.getText()
 							.toString().trim());
 					se.commit();
 					alertDialog.dismiss();
@@ -86,7 +105,10 @@ public class AlertDialogManager {
 		final LinearLayout ll = new LinearLayout(context);
 		ll.setLayoutParams(lp);
 		ll.setOrientation(LinearLayout.VERTICAL);
-		ll.addView(input);
+		ll.addView(input11);
+		ll.addView(input12);
+		ll.addView(input21);
+		ll.addView(input22);
 		ll.addView(btn);
 		alertDialog.setView(ll); // uncomment this line
 
@@ -95,7 +117,8 @@ public class AlertDialogManager {
 	}
 
 	public void showMessageDialog(Context context, String title, String message) {
-		final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+		final AlertDialog alertDialog = new AlertDialog.Builder(context)
+				.create();
 
 		alertDialog.setTitle(title);
 

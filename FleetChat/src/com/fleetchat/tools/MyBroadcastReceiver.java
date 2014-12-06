@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.fleetchat.ChatActivity;
+import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.fleetchat.util.GCMConstants;
 
@@ -42,6 +43,8 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			Log.d(TAG, intent.getStringExtra(EXTRA_MESSAGE));
 			Log.d(TAG, intent.getStringExtra(EXTRA_DATE));
 
+
+
 			FileIO fio = new FileIO(context);
 			fio.addChatDetail(intent.getStringExtra(EXTRA_GCMID),
 					intent.getStringExtra(EXTRA_MESSAGE), false);
@@ -55,7 +58,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 			Log.w(TAG, "get ACTION_ADD_FRIEND !!");
 
 			HashMap<String, Object> item = new HashMap<String, Object>();
-			item.put("pic1", R.drawable.ic_launcher);
+			item.put("pic1", R.drawable.logo);
 			item.put(EXTRA_NAME, intent.getStringExtra(EXTRA_NAME));
 
 			// TODO "DEBUG"
@@ -64,8 +67,10 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 							+ intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_GCMID, intent.getStringExtra(EXTRA_GCMID));
 			item.put(EXTRA_DATE, intent.getStringExtra(EXTRA_DATE));
+			item.put(EXTRA_PORID, intent.getStringExtra(EXTRA_PORID));
+			Log.d("friendPor", intent.getStringExtra(EXTRA_PORID));
 
-			Log.d(TAG, intent.getStringExtra(EXTRA_QR_DEADLINE_TIME));
+//			Log.d(TAG, intent.getStringExtra(EXTRA_QR_DEADLINE_TIME));
 
 			FileIO fio = new FileIO(context);
 			fio.addContact(item);
@@ -105,6 +110,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 				intent.putExtra(EXTRA_NAME, bundle.getString(EXTRA_NAME));
 				intent.putExtra(EXTRA_DATE, bundle.getString(EXTRA_DATE));
 				intent.putExtra(EXTRA_GCMID, bundle.getString(EXTRA_GCMID));
+				intent.putExtra(EXTRA_PORID, bundle.getString(EXTRA_PORID));
 				intent.putExtra(EXTRA_QR_DEADLINE_TIME,
 						bundle.getString(EXTRA_QR_DEADLINE_TIME));
 			} else if (action.equals(ACTION_SEND_MESSAGE)) {
@@ -113,6 +119,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver implements
 				intent.putExtra(EXTRA_GCMID, bundle.getString(EXTRA_GCMID));
 				intent.putExtra(EXTRA_TITLE, bundle.getString(EXTRA_TITLE));
 				intent.putExtra(EXTRA_MESSAGE, bundle.getString(EXTRA_MESSAGE));
+				intent.putExtra(EXTRA_PORID, bundle.getString(EXTRA_PORID));
 				intent.putExtra(EXTRA_DATE, bundle.getString(EXTRA_DATE));
 			}
 		}

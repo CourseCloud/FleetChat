@@ -1,7 +1,5 @@
 package com.fleetchat;
 
-import java.util.Date;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.content.Context;
@@ -15,26 +13,35 @@ import android.view.MenuItem;
 
 import com.fleetchat.fragments.ChatListFragment;
 import com.fleetchat.fragments.ContactFragment;
-import com.fleetchat.fragments.DemoFragment;
 import com.fleetchat.fragments.NFCTabFragment;
 import com.fleetchat.fragments.QRTabFragment;
+import com.fleetchat.fragments.SettingsFragment;
 import com.fleetchat.tools.AlertDialogManager;
 import com.fleetchat.tools.GCMUtilities;
-import com.fleetchat.util.TimeUtilities;
 
 public class MainActivity extends FragmentActivity {
 
 	protected static final String TAG = "MainActivity";
 	public static final String PREF = "PREF";
 	public static final String PREF_NAME = "PREF_NAME";
+	public static final String PREF_EMAIL = "PREF_EMAIL";
+	public static final String PREF_PORID = "PREF_PORID";
 	public static GCMUtilities GCM;
+	public static String USER_PORTRAIT_ID = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		GCM = new GCMUtilities(this);
 		setContentView(R.layout.activity_main);
+		setUserPortraitID();
 		setTab();
+	}
+
+	private void setUserPortraitID() {
+		USER_PORTRAIT_ID = getUserPorID(this);
+		if (USER_PORTRAIT_ID.equalsIgnoreCase(""))
+			USER_PORTRAIT_ID = "00";
 	}
 
 	private void setTab() {
@@ -60,7 +67,7 @@ public class MainActivity extends FragmentActivity {
 					tab.setIcon(R.drawable.chatclick);
 					break;
 				case 2:
-					fragment = new DemoFragment();
+					fragment = new SettingsFragment();
 					tab.setIcon(R.drawable.settingsclick);
 					break;
 				case 3:
@@ -177,5 +184,15 @@ public class MainActivity extends FragmentActivity {
 	public static String getUserName(Context context) {
 		return context.getSharedPreferences(MainActivity.PREF,
 				Context.MODE_PRIVATE).getString(MainActivity.PREF_NAME, "");
+	}
+
+	public static String getUserEmail(Context context) {
+		return context.getSharedPreferences(MainActivity.PREF,
+				Context.MODE_PRIVATE).getString(MainActivity.PREF_EMAIL, "");
+	}
+
+	public static String getUserPorID(Context context) {
+		return context.getSharedPreferences(MainActivity.PREF,
+				Context.MODE_PRIVATE).getString(MainActivity.PREF_PORID, "");
 	}
 }

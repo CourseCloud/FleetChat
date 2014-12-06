@@ -68,6 +68,7 @@ public class QRGeneratorFragment extends Fragment {
 	private String reg_id;
 	// TODO From user's registration
 	private String USER_NAME = "Username";
+	private String PORTRAIT_ID;
 
 	public QRGeneratorFragment() {
 	}
@@ -84,6 +85,7 @@ public class QRGeneratorFragment extends Fragment {
 
 	private void init() {
 		reg_id = MainActivity.GCM.getRegistrationId();
+		PORTRAIT_ID = MainActivity.USER_PORTRAIT_ID;
 		initCalendar();
 		chooseDate2 = "No Limitation";
 		chooseTime2 = "";
@@ -93,8 +95,10 @@ public class QRGeneratorFragment extends Fragment {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
-				chooseTime2 = "" + " " + hour + ":" + minute;
+
+				chooseDate2 = calibrateDate(year) + "/"
+						+ calibrateDate((month + 1)) + "/" + calibrateDate(day);
+				chooseTime2 = calibrateDate(hour) + ":" + calibrateDate(minute);
 				if (ch1.isChecked()) {
 					dp2.setVisibility(View.VISIBLE);
 					tp.setVisibility(View.VISIBLE);
@@ -119,7 +123,7 @@ public class QRGeneratorFragment extends Fragment {
 			public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
 				QRGeneratorFragment.this.hour = hourOfDay;
 				QRGeneratorFragment.this.minute = minute;
-				chooseTime2 = "" + " " + hour + ":" + minute;
+				chooseTime2 = calibrateDate(hour) + ":" + calibrateDate(minute);
 			}
 		});
 		btn_generate = (ImageView) rootView
@@ -130,8 +134,8 @@ public class QRGeneratorFragment extends Fragment {
 			public void onClick(View v) {
 				USER_NAME = MainActivity.getUserName(getActivity());
 				strToGen = "FleetChat" + "duration:" + "expiration:"
-						+ chooseDate2 + "-" + chooseTime2 + "" + "regID:"
-						+ reg_id + "UserName:" + USER_NAME;
+						+ chooseDate2 + chooseTime2 + "" + "regID:" + reg_id
+						+ "UserName:" + USER_NAME + "PortraitID:" + PORTRAIT_ID;
 
 				int smallerDimension = width < height ? width : height;
 				smallerDimension = smallerDimension * 1 / 2;
@@ -147,7 +151,7 @@ public class QRGeneratorFragment extends Fragment {
 				} catch (WriterException e) {
 					e.printStackTrace();
 				}
-				tv2.setText(chooseDate2 + "  " + chooseTime2);
+				tv2.setText("  " + chooseDate2 + "  " + chooseTime2);
 				qrDialog.show();
 			}
 		});
@@ -163,7 +167,8 @@ public class QRGeneratorFragment extends Fragment {
 				QRGeneratorFragment.this.year = year;
 				QRGeneratorFragment.this.month = month;
 				QRGeneratorFragment.this.day = day;
-				chooseDate2 = "" + " " + year + "/" + (month + 1) + "/" + day;
+				chooseDate2 = " " + calibrateDate(year)
+						+ calibrateDate((month + 1)) + calibrateDate(day);
 			}
 		});
 	}
@@ -202,5 +207,13 @@ public class QRGeneratorFragment extends Fragment {
 		Display display = manager.getDefaultDisplay();
 		width = display.getWidth();
 		height = display.getHeight();
+	}
+
+	private String calibrateDate(int date) {
+		String AfteCali = date + "";
+		if (AfteCali.length() < 2) {
+			AfteCali = "0" + AfteCali;
+		}
+		return AfteCali;
 	}
 }

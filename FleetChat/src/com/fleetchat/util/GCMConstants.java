@@ -15,6 +15,7 @@ public interface GCMConstants {
 	public static final String EXTRA_DATE = "EXTRA_DATE";
 	public static final String EXTRA_GCMID = "EXTRA_GCMID";
 	public static final String EXTRA_NAME = "EXTRA_NAME";
+	public static final String EXTRA_PORID = "EXTRA_PORID";
 	public static final String EXTRA_QR_DEADLINE_TIME = "EXTRA_QR_DEADLINE_TIME";
 
 	public static final String EXTRA_ACTION = "EXTRA_ACTION";

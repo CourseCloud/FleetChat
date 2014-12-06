@@ -129,7 +129,6 @@ public class FileIO implements FileIOConstants, GCMConstants {
 
 	public void addContact(HashMap<String, Object> item) {
 		File file = new File(_context.getFilesDir(), CONTACT);
-		Log.i("path", _context.getFilesDir() + "");
 		ArrayList<HashMap<String, Object>> list;
 
 		if (getContact() == null) {
@@ -178,15 +177,23 @@ public class FileIO implements FileIOConstants, GCMConstants {
 		}
 		return "";
 	}
+	public String getContactPorID(String gcmid) {
 
-	/*
-	 * public Boolean addContact(String name, String date, String gcmid) {
-	 * HashMap<String, Object> item = new HashMap<String, Object>();
-	 * item.put("pic1", R.drawable.ic_launcher); item.put(EXTRA_NAME, name);
-	 * item.put(EXTRA_GCMID, date); item.put(EXTRA_DATE, gcmid);
-	 * 
-	 * return addContact(item); }
-	 */
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+
+		list = getContact();
+
+		// Read MESSAGE only
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).get(EXTRA_GCMID).equals(gcmid)) {
+					Log.d(TAG, i + ". found exised : " + list.get(i));
+					return (String) list.get(i).get(EXTRA_PORID);
+				}
+			}
+		}
+		return "";
+	}
 
 	@SuppressWarnings("unchecked")
 	public ArrayList<HashMap<String, Object>> getContact() {

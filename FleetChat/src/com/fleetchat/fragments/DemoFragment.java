@@ -132,8 +132,8 @@ public class DemoFragment extends Fragment {
 				Log.w(TAG, MainActivity.GCM.getRegistrationId());
 				regIds.add(MainActivity.GCM.getRegistrationId());
 				// regIds.add(CommonUtilities.tempID2);
-				MainActivity.GCM.postDataSendMessage(regIds, "Welcome",
-						"Hello GCM");
+//				MainActivity.GCM.postDataSendMessage(regIds, "Welcome",
+//						"Hello GCM");
 
 			}
 		});
@@ -157,7 +157,8 @@ public class DemoFragment extends Fragment {
 
 				MainActivity.GCM.postDataAddFriend(
 						MainActivity.GCM.getRegistrationId(),
-						TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous");
+						TimeUtilities.getTimeyyyyMMddhhmmss(), "Annoymous",
+						"00");
 
 			}
 		});

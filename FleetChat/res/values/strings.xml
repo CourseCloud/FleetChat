@@ -30,5 +30,12 @@
     <string name="nfcpush_fragment_btn">Start NFC delivery</string>
     <string name="nfcpush_fragment_tvstatus">NFC status:</string>
     
+    <!-- settings fragment -->
+    <string name="settings_fragment_title">Personal settings</string>
+    <string name="settings_fragment_sethead">click to set portrait</string>
+    <string name="settings_fragment_name">Your name: </string>
+    <string name="settings_fragment_email">Your email: </string>
+    <string name="settings_fragment_portrait">Select your portrait </string>
+    <string name="settings_fragment_dialog_btn">OK </string>
 
 </resources>

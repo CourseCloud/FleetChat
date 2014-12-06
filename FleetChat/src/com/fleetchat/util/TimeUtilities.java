@@ -43,6 +43,12 @@ public class TimeUtilities {
 	public static String getTimeyyyyMMddhhmmss() {
 		return (String) DateFormat.format("yyyyMMddhhmmss", new Date());
 	}
+	public static String getTimeyyyyMMddHHmmss() {
+		return (String) DateFormat.format("yyyyMMddHHmmss", new Date());
+	}
+	public static String getTimeyyyyMMddHHmm() {
+		return (String) DateFormat.format("yyyyMMddHHmm", new Date());
+	}
 
 	/**
 	 * Sample : Date dateYesterday = new Date(new Date().getTime()- (1000 * 60 *
@@ -54,10 +60,10 @@ public class TimeUtilities {
 	 * @return
 	 */
 	public static boolean isNowOverTime(long deadlineTime) {
-		if (StringToLong(getTimeyyyyMMddhhmmss()) < deadlineTime) {
-			return true;
+		if (StringToLong(getTimeyyyyMMddHHmm()) > deadlineTime) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static boolean isNowOverTime(String deadlineTime) {

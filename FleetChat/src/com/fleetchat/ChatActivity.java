@@ -11,7 +11,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.database.DataSetObserver;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.fleetchat.chatbubble.ChatArrayAdapter;
@@ -45,6 +48,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 	// bubble params
 	private ChatArrayAdapter chatArrayAdapter;
 	private String _contactName;
+	public String _portraitID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +65,11 @@ public class ChatActivity extends Activity implements GCMConstants,
 		// Initialize ActionBar
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowHomeEnabled(false);
-
 		try {
 			// Get contact's GCM id.
 			_contact = getIntent().getStringExtra(EXTRA_GCMID);
+			_portraitID = fio.getContactPorID(_contact);
+			Log.i("idHead", _portraitID);
 
 			// actionBar.setTitle()
 			ArrayList<HashMap<String, Object>> list = fio.getContact();
@@ -87,6 +92,7 @@ public class ChatActivity extends Activity implements GCMConstants,
 	private void setView() {
 		_lvContent = (ListView) findViewById(R.id.chat_activity_listView1);
 		_lvContent.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+		_lvContent.setDividerHeight(0);
 		_etMessage = (EditText) findViewById(R.id.chat_activity_editText_msg);
 		_btnSend = (Button) findViewById(R.id.chat_activity_btn_send);
 
@@ -157,8 +163,10 @@ public class ChatActivity extends Activity implements GCMConstants,
 		if (list != null) {
 			for (int i = 0; i < list.size(); i++) {
 				addBubble((Boolean) list.get(i).get(WHO_POST), (String) list
-						.get(i).get(MESSAGE), _contactName, timeCreater((String) list
-						.get(i).get(TIME)));
+						.get(i).get(MESSAGE), _contactName,
+						timeCreater((String) list.get(i).get(TIME)),
+						_portraitID);
+
 			}
 		}
 		;
@@ -169,8 +177,9 @@ public class ChatActivity extends Activity implements GCMConstants,
 	}
 
 	private void addBubble(Boolean side, String message, String user,
-			String time) {
-		chatArrayAdapter.add(new ChatMessage(!side, message, user, time));
+			String time, String porID) {
+		chatArrayAdapter
+				.add(new ChatMessage(!side, message, user, time, porID));
 	}
 
 	private void moveListViewToBottom() {
@@ -205,9 +214,10 @@ public class ChatActivity extends Activity implements GCMConstants,
 				// TODO "DEBUG"
 				Log.e("DEBUG", "ChatBroadcastReceiver onReceive");
 				String user = intent.getStringExtra(EXTRA_NAME);
+				String porID = intent.getStringExtra(EXTRA_PORID);
 				String msg = intent.getStringExtra(EXTRA_MESSAGE);
-				String time = timeCreater(TimeUtilities.getTimeyyyyMMddhhmmss());
-				addBubble(true, msg, user, time);
+				String time = timeCreater(TimeUtilities.getTimeyyyyMMddHHmmss());
+				addBubble(true, msg, user, time, porID);
 				setAdapter(context);
 				moveListViewToBottom();
 			}
@@ -227,4 +237,5 @@ public class ChatActivity extends Activity implements GCMConstants,
 				+ " " + time.substring(8, 10) + ":" + time.substring(10, 12);
 		return timeAfterchange;
 	}
+
 }

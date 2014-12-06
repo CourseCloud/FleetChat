@@ -3,6 +3,7 @@ package com.fleetchat.qr;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -47,7 +48,6 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 	private int minute;
 
 	// String used to generate qrcode
-	private String strToGen;
 	private String chooseDate1, chooseDate2;
 	private String chooseTime2;
 
@@ -69,6 +69,7 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 
 	private void init() {
 		tvMessage = (TextView) rootView.findViewById(R.id.tvMessage);
+		tvMessage.setVisibility(View.GONE);
 		btScan = (ImageView) rootView
 				.findViewById(R.id.qrcode_fragment2_Scanner);
 		btScan.setOnClickListener(new OnClickListener() {
@@ -88,6 +89,10 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 		});
 	}
 
+	// "FleetChat" + "duration:" + "expiration:"+ chooseDate2 + "-" +
+	// chooseTime2 + "" + "regID:"
+	// + reg_id + "UserName:" + USER_NAME + "PortraitID:"
+	// + PORTRAIT_ID;
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		if (requestCode == 0) {
 			String message = "";
@@ -98,41 +103,84 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 						&& contents.split("duration:")[0]
 								.equalsIgnoreCase("FleetChat")) {
 
-					Log.d(TAG, "contents = " + contents);
-
 					HashMap<String, Object> item = new HashMap<String, Object>();
-					String name = contents.split("regID:")[1]
-							.split("UserName:")[1];
+					String name = contents.split("UserName:")[1]
+							.split("PortraitID:")[0];
 					String gcmidFromOther = contents.split("regID:")[1]
 							.split("UserName:")[0];
 					String deadline = contents.split("expiration:")[1]
 							.split("regID:")[0];
+					String portrait = contents.split("PortraitID:")[1];
+					String addDate = timeCreater(TimeUtilities
+							.getTimeyyyyMMddHHmmss());
+					String dt;
+					Log.i("dtInfo", deadline.trim());
+					if (!deadline.equalsIgnoreCase("No Limitation-")) {
+						dt = deadline.trim().substring(0, 4)
+								+ deadline.trim().substring(5, 7)
+								+ deadline.trim().substring(8, 10)
+								+ deadline.trim().substring(10, 12)
+								+ deadline.trim().substring(13, 15);
+					} else {
+						dt = "No Limitation-";
+					}
 					item.put(EXTRA_NAME, name);
-					item.put(EXTRA_DATE, deadline);
+					item.put(EXTRA_DATE, addDate);
 					item.put(EXTRA_GCMID, gcmidFromOther);
+					item.put(EXTRA_PORID, portrait);
 
 					fio = new FileIO(getActivity());
-					// TODO (ho) test it, fio.checkContactExist(gcmidFromOther)
-					if (!fio.checkContactExist(gcmidFromOther)) {
-						fio.addContact(item);
+					if (!dt.equalsIgnoreCase("No Limitation-")) {
+						if (TimeUtilities.isNowOverTime(dt)) {
+							if (!fio.checkContactExist(gcmidFromOther)) {
+								fio.addContact(item);
 
-						String myName = MainActivity.getUserName(getActivity());
-						MainActivity.GCM.postDataAddFriend(gcmidFromOther,
-								deadline, myName);
-						message = "Content: " + contents + "\nFormat: "
-								+ format;
+								String myName = MainActivity
+										.getUserName(getActivity());
+								MainActivity.GCM.postDataAddFriend(
+										gcmidFromOther, addDate, myName,
+										MainActivity.USER_PORTRAIT_ID);
+								message = "Content: " + contents + "\nFormat: "
+										+ format;
 
-						new AlertDialogManager().showMessageDialog(
-								getActivity(), "Succes",
-								"Friend has been added/updated! \n" + message);
+								new AlertDialogManager().showMessageDialog(
+										getActivity(), "Success", "Friend  "
+												+ name + "\n"
+												+ "has been added/updated!");
+							} else {
+
+								new AlertDialogManager().showMessageDialog(
+										getActivity(), "Fail",
+										"You two are friends already!");
+							}
+						} else {
+							new AlertDialogManager().showMessageDialog(
+									getActivity(), "Fail",
+									"The QR code is expired");
+						}
 					} else {
+						if (!fio.checkContactExist(gcmidFromOther)) {
+							fio.addContact(item);
 
-						new AlertDialogManager().showMessageDialog(
-								getActivity(), "Fail",
-								"You two are friends already!");
+							String myName = MainActivity
+									.getUserName(getActivity());
+							MainActivity.GCM.postDataAddFriend(gcmidFromOther,
+									deadline, myName,
+									MainActivity.USER_PORTRAIT_ID);
+							message = "Content: " + contents + "\nFormat: "
+									+ format;
+
+							new AlertDialogManager().showMessageDialog(
+									getActivity(), "Succes",
+									"Friend has been added/updated! \n"
+											+ message);
+						} else {
+ 
+							new AlertDialogManager().showMessageDialog(
+									getActivity(), "Fail",
+									"You two are friends already!");
+						}
 					}
-					// TODO need add check that over deadline time.
-					// TimeUtilities.isNowOverTime(deadline);
 
 				} else {
 					message = null;
@@ -174,6 +222,13 @@ public class QRScannerFragment extends Fragment implements GCMConstants {
 					}
 				});
 		downloadDialog.show();
+	}
+
+	private String timeCreater(String time) {
+		String timeAfterchange;
+		timeAfterchange = time.substring(0, 4) + "/" + time.substring(4, 6)
+				+ "/" + time.substring(6, 8);
+		return timeAfterchange;
 	}
 
 }

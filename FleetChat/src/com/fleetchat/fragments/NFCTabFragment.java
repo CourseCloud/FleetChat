@@ -39,6 +39,7 @@ import com.fleetchat.MainActivity;
 import com.fleetchat.R;
 import com.fleetchat.tools.FileIO;
 import com.fleetchat.util.GCMConstants;
+import com.fleetchat.util.TimeUtilities;
 
 public class NFCTabFragment extends Fragment implements GCMConstants {
 	private View rootView;
@@ -72,8 +73,8 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	// reg_id is the local user id
 	private String reg_id;
 	// TODO From user's registration
-	private String USER_NAME = "Username";
-	private String strFromDevice = "FleetChat";
+	private String USER_NAME;
+	private String PORTRAIT_ID;
 	private FileIO fio;
 
 	public NFCTabFragment() {
@@ -118,7 +119,9 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	}
 
 	private void init() {
+		USER_NAME = MainActivity.getUserName(getActivity());
 		reg_id = MainActivity.GCM.getRegistrationId();
+		PORTRAIT_ID = MainActivity.USER_PORTRAIT_ID;
 		title = (TextView) rootView.findViewById(R.id.nfcpush_tvTitle);
 		status = (TextView) rootView.findViewById(R.id.nfcpush_tvStatus);
 		status.setText("");
@@ -139,6 +142,7 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 
 			@Override
 			public void onClick(View v) {
+				USER_NAME = MainActivity.getUserName(getActivity());
 				enableNdefExchangeMode();
 				disableTagWriteMode();
 				if (mResumed) {
@@ -195,27 +199,28 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 		stFromDevice = body;
 		nfcAddFriend();
 		tv1.setText("");
-		tv1.append(body);
 	}
 
 	// stFromDevice format = "FleetChat" + "regID:" + reg_id + "UserName:" +
-	// USER_NAME;
+	// USER_NAME + "PortraitID:" + PORTRAIT_ID;
 	private void nfcAddFriend() {
 		if (stFromDevice.split("regID:")[0].equalsIgnoreCase("FleetChat")) {
 			HashMap<String, Object> item = new HashMap<String, Object>();
-			String name = stFromDevice.split("regID:")[1].split("UserName:")[1];
+			String name = stFromDevice.split("UserName:")[1].split("PortraitID:")[0];
 			String gcmidFromOther = stFromDevice.split("regID:")[1]
 					.split("UserName:")[0];
-			String deadline = null;
+			String addDate = timeCreater(TimeUtilities.getTimeyyyyMMddHHmmss());
+			String porID = stFromDevice.split("PortraitID:")[1];
 			item.put(EXTRA_NAME, name);
-			item.put(EXTRA_DATE, deadline);
+			item.put(EXTRA_DATE, addDate);
 			item.put(EXTRA_GCMID, gcmidFromOther);
+			item.put(EXTRA_PORID, porID);
 
 			fio1 = new FileIO(getActivity());
-			if (fio1.checkContactExist(gcmidFromOther)) {
+			if (!fio1.checkContactExist(gcmidFromOther)) {
 				fio1.addContact(item);
-				MainActivity.GCM.postDataAddFriend(gcmidFromOther, deadline,
-						"Annoymous");
+				MainActivity.GCM.postDataAddFriend(gcmidFromOther, addDate,
+						USER_NAME, porID);
 				Toast t = Toast.makeText(getActivity(),
 						"Friend has been added/updated successfully",
 						Toast.LENGTH_SHORT);
@@ -301,7 +306,8 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 	}
 
 	private NdefMessage getNoteAsNdef() {
-		strToGen = "FleetChat" + "regID:" + reg_id + "UserName:" + USER_NAME;
+		strToGen = "FleetChat" + "regID:" + reg_id + "UserName:" + USER_NAME
+				+ "PortraitID:" + PORTRAIT_ID;
 		byte[] textBytes = strToGen.getBytes();
 		NdefRecord textRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
 				"text/plain".getBytes(), new byte[] {}, textBytes);
@@ -411,5 +417,12 @@ public class NFCTabFragment extends Fragment implements GCMConstants {
 
 	private void toast(String text) {
 		Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+	}
+
+	private String timeCreater(String time) {
+		String timeAfterchange;
+		timeAfterchange = time.substring(0, 4) + "/" + time.substring(4, 6)
+				+ "/" + time.substring(6, 8);
+		return timeAfterchange;
 	}
 }
